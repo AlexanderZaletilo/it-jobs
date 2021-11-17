@@ -16,7 +16,7 @@ services:
                ./manage.py runserver 0.0.0.0:${SERVER_PORT:-8000}"
   celery:
     image: web
-    command: celery -A Vacancies_stepik worker -l INFO
+    command: celery -A core worker -l INFO
   celery-beat:
     image: web
-    command: celery -A Vacancies_stepik beat -l INFO
+    command: celery -A core beat -l INFO

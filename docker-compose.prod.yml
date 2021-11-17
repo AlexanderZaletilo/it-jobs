@@ -51,7 +51,7 @@ services:
 
   celery:
     image: "$CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
-    command: celery -A Vacancies_stepik worker --concurrency=${CELERY_CONCURRENCY:-1} -l INFO
+    command: celery -A core worker --concurrency=${CELERY_CONCURRENCY:-1} -l INFO
     deploy:
       replicas: ${REPLICA_COUNT_CELERY:-0}
       labels:
@@ -59,7 +59,7 @@ services:
   
   celery-beat:
     image: "$CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
-    command: celery -A Vacancies_stepik beat -l INFO
+    command: celery -A core beat -l INFO
     deploy:
       replicas: ${REPLICA_COUNT_CELERY_BEAT:-0}
       labels:

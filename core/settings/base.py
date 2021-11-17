@@ -42,10 +42,10 @@ class Base(Configuration):
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-        'Vacancies_stepik.my_middleware.SimpleMiddleware',
+        'core.my_middleware.SimpleMiddleware',
     ]
 
-    ROOT_URLCONF = 'Vacancies_stepik.urls'
+    ROOT_URLCONF = 'core.urls'
 
     TEMPLATES = [
         {
@@ -64,7 +64,7 @@ class Base(Configuration):
         },
     ]
 
-    WSGI_APPLICATION = 'Vacancies_stepik.wsgi.application'
+    WSGI_APPLICATION = 'core.wsgi.application'
 
     DATABASES = {
         "default": {
@@ -184,7 +184,7 @@ class Base(Configuration):
                 'level': 'INFO',
                 'propagate': True
             },
-            'Vacancies_stepik': {
+            'core': {
                 'handlers': ['file'],
                 'level': 'INFO',
                 'propagate': True
