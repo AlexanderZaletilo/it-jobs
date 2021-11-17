@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Вакансии компании | Джуманджи</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #F6F2E6;
+        }
+    </style>
+</head>
+
+{% extends 'wrapper.html' %}
+{% block container %}
+
+    <main class="container mt-3 pb-5">
+        <div class="row mt-5">
+            <div class="col-12 col-lg-4">
+                <aside class="pt-3 pb-4 px-4 mb-5 card">
+                    <h1 class="h4 pt-2 pb-2">Моя компания</h1>
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link" href="/mycompany">1. Информация о&nbsp;компании</a>
+                        <a class="nav-link active" href="/mycompany/vacancies">2. Вакансии</a>
+                    </div>
+                </aside>
+            </div>
+            <div data-aos="fade-left" class="col-12 col-lg-8">
+                <div class="card">
+                    <div class="card-body px-4 pb-4">
+                        <section class="tab-pane fade show active">
+                            <h2 class="h4 pt-2 pb-3">Вакансии</h2>
+                            <!-- vacancy state 1 -->
+                            {% if objects.count == 0 %}
+                                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                                    Кажется у вас еще нет вакансий, самое время создать их!
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                            {% for object in objects %}
+                                <div class="card mt-3">
+                                    <div class="card-body px-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-6 col-lg-8">
+                                                <a href="/mycompany/vacancies/{{ object.id }}"
+                                                   class="mb-1 h3">{{ object.title }}</a>
+                                                <p class="mb-1">
+                                                    <span class="mr-4">{{ object.salary_min }} - {{ object.salary_max }}</span><a
+                                                        href="#" class="text-info">{{ object.applications.all.count }}
+                                                    отклика</a>
+                                                </p>
+                                                <p class="mb-1">
+                                                    {{ object.specialty.title }}
+                                                </p>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            {% endfor %}
+                            <!-- END vacancy state 1 -->
+                            <!-- vacancy state 2 -->
+                            <!-- END vacancy state 2 -->
+                        </section>
+                        <form action="/mycompany/vacancies/create">
+                            <button class="btn btn-primary btn-lg btn-block my-3">Создать</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

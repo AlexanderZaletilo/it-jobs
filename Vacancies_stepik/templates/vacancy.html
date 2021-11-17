@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Вакансия</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+{% extends 'wrapper.html' %}
+{% block container %}
+
+    <main class="container mt-3 pb-5">
+        <div class="row mt-5">
+            <div class="col-12 col-lg-2">
+                <div class="pl-3 mb-5">
+                    <p><a href="/vacancies/">Назад</a></p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8">
+                <section class="pl-3">
+                    <a href="#"><img src="{{ object.company.logo.url }}" width="130" height="80" alt=""></a>
+                    <div class="d-flex align-items-baseline align-content-baseline">
+                        <h1 class="h2 mt-4 font-weight-bold">{{ object.title }}</h1>
+                        <p class="m-0 pl-3">{{ object.salary_min }} – {{ object.salary_max }} Р</p>
+                    </div>
+                    <p class="mt-2">{{ object.specialty.title }} </p>
+                    <div data-aos="fade-down-right" class="form-group pb-2">
+                        <label class="mb-2 text-dark" for="vacancyDescription">Описание вакансии</label>
+                        <p class="text-justify"
+                                  style="color:#000;">{{ object.description }}</p>
+                    </div>
+                    {% if request.user.is_authenticated == True %}
+                        <form data-aos="fade-up"
+                              data-aos-anchor-placement="center-bottom" style="background-color: #F6F2E6" action=""
+                              method="post" class="card mt-4 mb-3">
+                            {% csrf_token %}
+                            <div class="form-group " style="background-color: #F6F2E6">
+                                <p class="h5 m-3 m-3 font-weight-normal">Ваше резюме, {{ request.user.first_name }}.
+                                    Изменить его можно <a href="/myresume/">тут</a></p>
+                            </div>
+                            <div class="m-3">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userName">Имя</label>
+                                            <input readonly class="form-control" type="text" name="first_name"
+                                                   value="{{ form.first_name.value|default_if_none:'' }}" maxlength="32"
+                                                   required
+                                                   id="id_first_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userSurname">Фамилия</label>
+                                            <input readonly class="form-control" type="text" name="last_name"
+                                                   value="{{ form.last_name.value|default_if_none:'' }}" maxlength="32"
+                                                   required
+                                                   id="id_last_name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userReady">Готовность к работе</label>
+                                            <select disabled="true" class="custom-select mr-sm-2" id="status"
+                                                    name="status">
+                                                {% for object in form.status %}
+                                                    <a>{{ object }}</a>
+                                                {% endfor %}
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userPortfolio">Ожидаемое
+                                                вознаграждение</label>
+                                            <input readonly class="form-control" type="number" name="salary"
+                                                   value="{{ form.salary.value|default_if_none:'' }}" required
+                                                   id="id_salary">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userSpecialization">Специализация</label>
+                                            <select disabled="true" class="custom-select mr-sm-2" id="specialty"
+                                                    name="specialty">
+                                                {% for object in form.specialty %}
+                                                    <a>{{ object }}</a>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userQualification">Квалификация</label>
+                                            <select disabled="true" class="custom-select mr-sm-2" id="grade"
+                                                    name="grade">
+                                                {% for object in form.grade %}
+                                                    <a>{{ object }}</a>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group pb-2">
+                                    <label class="mb-2 text-dark" for="userEducation">Образование</label>
+                                    <textarea readonly class="form-control text-uppercase" rows="4" name="education"
+                                              id="education"
+                                              style="color:#000;">{{ form.education.value|default_if_none:'' }}</textarea>
+                                </div>
+                                <div class="form-group pb-2">
+                                    <label class="mb-2 text-dark" for="userExperience">Опыт работы</label>
+                                    <textarea readonly class="form-control" rows="4" name="experience" id="experience"
+                                              style="color:#000;">{{ form.experience.value|default_if_none:'' }}</textarea>
+                                </div>
+                                <div class="form-group pb-3">
+                                    <label class="mb-2 text-dark" for="userPortfolio">Ссылка на портфолио</label>
+                                    <input class="form-control" readonly type="text"
+                                           placeholder="http://anylink.github.io"
+                                           name="portfolio"
+                                           id="portfolio" value="{{ form.portfolio.value|default_if_none:'' }}">
+                                </div>
+                                <input type="submit" class="btn btn-primary mt-4 mb-2" value="Отправить резюме">
+                            </div>
+                        </form>
+                    {% endif %}
+                    {% if request.user.is_authenticated == False %}
+                        <div class="form-group pb-2">
+                            <label class="h4 mt-5 text-dark" for="userEducation">Вы не авторизовались, чтобы отправить
+                                резюме <a href="/login">войдите</a></label>
+
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </main>
+{% endblock %}

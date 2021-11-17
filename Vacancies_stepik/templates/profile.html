@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Редактировать профиль | Джуманджи</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,800,300" type="text/css" >
+    <style>
+    body {
+      background-color: #F6F2E6;
+    }
+  </style>
+</head>
+{% extends 'wrapper.html' %}
+{% block container %}
+    <main data-aos="fade-zoom-in"
+     data-aos-easing="ease-in-back"
+     data-aos-delay="10"
+     data-aos-offset="10" class="container mt-5">
+
+    <section class="col-9 col-lg-4 offset-2 offset-lg-4 card">
+      <div class="">
+          <div class="text-center my-5 ">
+            <h1 class="h3 mb-3 font-weight-normal">{{ request.user.first_name }} {{ request.user.last_name }}</h1>
+          </div>
+          <div class="text-center my-8">
+            <img  class="rounded-circle shadow img center-block" src="{{request.user.resume.profile_pic.url}}" width="170" height="170">
+          </div>
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="custom-file my-3">
+                <input type="file" class="custom-file-input" accept="image/*" id="id_profile_pic" name="profile_pic">
+                 <label class="custom-file-label" for="id_profile_pic">Сменить фото</label>
+            </div>
+            <div class="my-3 form-label-group">
+            <p class="text-muted"> Телефон :
+            <input type="text" name="phone" placeholder="Мобильный телефон" value="{{ form.phone.value|default_if_none:'' }}" autocomplete="new-password" required id="phone" class="form-control p-3"></p>
+            <label for="inputPassword"></label>
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-block my-3" type="submit" name="Update Information">Обновить информацию</button>
+        </form>
+      </div>
+    </section>
+    </main>
+{% endblock %}

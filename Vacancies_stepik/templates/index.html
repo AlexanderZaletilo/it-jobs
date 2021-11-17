@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<style>
+
+.card {
+    cursor: pointer;
+  display:-webkit-box;
+  display:-ms-flexbox;
+  display:flex;
+  -webkit-box-orient:vertical;
+  -webkit-box-direction:normal;
+  -ms-flex-direction:column;
+  flex-direction:column;
+  position:relative;
+  -webkit-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+  -o-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border-radius:16px;
+  overflow:hidden;
+  -webkit-box-shadow:  2px 2px 10px #e1e1e3, -2px -2px 10px #ffffff;
+  box-shadow:  2px 2px 10px #e1e1e3, -2px -2px 10px #ffffff;
+}
+
+.card:hover {
+  box-shadow: 5px 5px 30px 15px rgba(0,0,0,0.25);
+    border-radius: 15px;
+}
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Джуманджи</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    {#  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">#}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,800,300" type="text/css">
+    <style>
+        body {
+            background-color: white;
+        }
+
+        h1 {
+            color: #363636;
+        }
+
+        h2 {
+            color: #363636;
+        }
+
+    </style>
+</head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% extends 'wrapper.html' %}
+{% block container %}
+
+    <main class="container mt-3">
+        <section>
+            <h1 class="h1 text-center mx-auto mt-4 py-5"><strong>Вакансии для <br>разработчиков</strong></h1>
+            <div class="row mb-4">
+                <div class="col-12 col-md-8 col-lg-6 offset-lg-3 offset-md-2">
+                    <form class="form-inline mb-3" method="get" action="search/">
+                        <div class="form-group col-8 col-md-10 pl-0">
+                            {#              <input id="query" class="form-control w-100" type="search" placeholder="Найти работу или стажировку" aria-label="Найти работу или стажировку">#}
+                            <input class="form-control w-100" name="q" type="text" value="{{ request.GET.q }}"
+                                   placeholder="Найти работу или стажировку" aria-label="Найти работу или стажировку">
+                        </div>
+
+                        <div class="form-group col-4 col-md-2 pl-0">
+                            <button class="btn btn-primary w-100" type="submit">Найти</button>
+                        </div>
+                    </form>
+                    <p>Например:
+                        <a href="search/?q=python" class="text-dark border-bottom border-dark m-1 text-decoration-none">Python</a>
+                        <a href="search/?q=Flask" class="text-dark border-bottom border-dark m-1 text-decoration-none">Flask</a>
+                        <a href="search/?q=Django" class="text-dark border-bottom border-dark m-1 text-decoration-none">Django</a>
+                        <a href="search/?q=Парсинг"
+                           class="text-dark border-bottom border-dark m-1 text-decoration-none">Парсинг</a>
+                        <a href="search/?q=ML"
+                           class="text-dark border-bottom border-dark m-1 text-decoration-none">ML</a>
+
+                    </p>
+                </div>
+            </div>
+        </section>
+</div>
+
+        <section class="mt-5 pt-3">
+            <h2 class="h2 font-weight-normal text-center mb-5">Вакансии по рубрикам</h2>
+            <div data-aos="fade-up"
+                 data-aos-anchor-placement="top-bottom" class="row justify-content-between mt-5" data-test="cards">
+                {% for object in objects %}
+                    <div data-aos="flip-left" class="col-6 col-md-6 col-lg-3">
+                        <div class="card pt-4 text-center mb-4 ">
+                            <img class="mx-auto d-block" src="{{ object.picture.url }}" width="100" height="100" alt="">
+                            <div class="card-body">
+                                <p class="card-text mb-2">{{ object.title }}</p>
+                                <p class="card-text"><a href="vacancies/cat/{{ object.code }}">{{ object.count }}
+                                    вакансий</a></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="my-5 pt-3">
+            <h2 class="h2 font-weight-normal text-center mb-5">Нам доверяют лучшие компании</h2>
+            <div class="row mb-0">
+
+                {% for company in companies %}
+                                        <div data-aos="fade-up"
+                                             data-aos-anchor-placement="top-bottom" class="col-6 col-md-6 col-lg-3">
+                                            <div class="card pt-4 text-center mb-4">
+                                                <a href="/companies/{{ company.id }}/" style="max-width: 150px;" class="mx-auto d-block">
+                                                    <img src="{{ company.logo.url }}" width="130" height="80" alt="">
+                                                </a>
+                                                <div class="card-body">
+                                                    <p class="card-text"><a href="/companies/{{ company.id }}/"> {{ company.count }}
+                                                        вакансий</a></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                {% endfor %}
+
+            </div>
+        </section>
+    </main>
+{% endblock %}

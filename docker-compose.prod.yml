@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+
+  postgres:
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    deploy:
+      replicas: ${REPLICA_COUNT_POSTGRES:-0}
+      labels:
+        - traefik.enable=false
+
+  pgbouncer:
+    deploy:
+      replicas: ${REPLICA_COUNT_PGBOUNCER:-0}
+      labels:
+        - traefik.enable=false
+
+  redis:
+    deploy:
+      replicas: ${REPLICA_COUNT_REDIS:-0}
+      labels:
+        - traefik.enable=false
+
+  web:
+    image: "$CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
+    command: >
+      bash -c "python wait_for_postgres.py &&
+               ./manage.py migrate &&
+               ./manage.py createadmin &&
+               gunicorn --workers=${GUNICORN_WORKER_COUNT:-1} --threads=${GUNICORN_THREAD_COUNT:-1} --reload --bind :${SERVER_PORT:-8000} vacancies_stepik.wsgi:application"
+    deploy:
+      replicas: ${REPLICA_COUNT_DJANGO}
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=${TRAEFIK_NETWORK}
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.${TRAEFIK_BACKEND}-http.rule=Host(`$TRAEFIK_HOST`)
+        - traefik.http.routers.${TRAEFIK_BACKEND}-http.entrypoints=http
+        - traefik.http.routers.${TRAEFIK_BACKEND}-http.middlewares=https-redirect
+        - traefik.http.routers.${TRAEFIK_BACKEND}-https.rule=Host(`$TRAEFIK_HOST`)
+        - traefik.http.routers.${TRAEFIK_BACKEND}-https.entrypoints=https
+        - traefik.http.routers.${TRAEFIK_BACKEND}-https.tls=true
+        - traefik.http.routers.${TRAEFIK_BACKEND}-https.tls.certresolver=le
+        - traefik.http.services.${TRAEFIK_BACKEND}.loadbalancer.server.port=${SERVER_PORT:-8000}
+    networks:
+      - public
+
+  celery:
+    image: "$CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
+    command: celery -A Vacancies_stepik worker --concurrency=${CELERY_CONCURRENCY:-1} -l INFO
+    deploy:
+      replicas: ${REPLICA_COUNT_CELERY:-0}
+      labels:
+        - traefik.enable=false
+  
+  celery-beat:
+    image: "$CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
+    command: celery -A Vacancies_stepik beat -l INFO
+    deploy:
+      replicas: ${REPLICA_COUNT_CELERY_BEAT:-0}
+      labels:
+        - traefik.enable=false
+
+networks:
+  public:
+    external: true
+    name: ${TRAEFIK_NETWORK:-traefik-public}
+
+volumes:
+  db-data:
+    driver: local

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Вакансии компании | Джуманджи</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #F6F2E6;
+        }
+    </style>
+</head>
+
+{% extends 'wrapper.html' %}
+{% block container %}
+
+    <main class="container mt-3 pb-5">
+        <div class="row mt-5">
+            <div class="col-12 col-lg-4">
+                <aside class="pt-3 pb-4 px-4 mb-5 card">
+                    <h1 class="h4 pt-2 pb-2">Моя компания</h1>
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link" href="/mycompany">1. Информация о&nbsp;компании</a>
+                        <a class="nav-link active" href="/mycompany/vacancies">2. Вакансии</a>
+                    </div>
+                </aside>
+            </div>
+            <div data-aos="fade-left" class="col-12 col-lg-8">
+                <div class="card">
+                    <div class="card-body px-4 pb-4 tab-content">
+                        <!-- Tab -->
+                        <section>
+                            <h2 class="h4 pt-2 pb-3">Ваша вакансия</h2>
+                            {% for message in messages %}
+                                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                            <form action=""  name="update" method="post">
+                                {% csrf_token %}
+                                <div class="mb-2 text-dark">
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="vacancyTitle">Название вакансии</label>
+                                            <input class="form-control" type="text"
+                                                   value="{{ form.title.value|default_if_none:'' }}"
+                                                   name="title" id="title">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userSpecialization">Специализация</label>
+                                            <select class="custom-select mr-sm-2" id="specialty" name="specialty">
+                                                {% for object in form.specialty %}
+                                                    <a>{{ object }}</a>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="vacancySalaryMin">Зарплата от</label>
+                                            <input class="form-control" type="text"
+                                                   value="{{ form.salary_min.value|default_if_none:'' }}"
+                                                   name="salary_min" id="id_salary_min">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2" for="vacancySalaryMax">Зарплата до</label>
+                                            <input class="form-control" type="text"
+                                                   value="{{ form.salary_max.value|default_if_none:'' }}"
+                                                   name="salary_max" id="salary_max">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group pb-2">
+                                    <label class="mb-2 text-dark" for="vacancySkills">Требуемые навыки</label>
+                                    <textarea class="form-control" rows="3" id="skills" name="skills"
+                                              style="color:#000;">{{ form.skills.value|default_if_none:'' }}</textarea>
+                                </div>
+                                <div class="form-group pb-2">
+                                    <label class="mb-2 text-dark" for="vacancyDescription">Описание вакансии</label>
+                                    <textarea class="form-control" rows="13" id="description" name="description"
+                                              style="color:#000;">{{ form.description.value|default_if_none:'' }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input name="update" type="submit" class="btn btn-info" value="Сохранить">
+                                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                        data-target="#exampleModal">
+                                                    Удалить
+                                                </button>
+                                </div>
+                            </form>
+                            <!-- END Vacancy info -->
+                            <!-- Applications -->
+                            <h2 class="h4 pt-2 pb-3">Отклики - {{ applications.count }}</h2>
+                            <!-- Application 1 -->
+                            {% for application in applications %}
+                                <div class="card mt-3">
+                                    <div class="card-body px-4">
+                                        <p class="mb-1 font-weight-bold">{{ application.user.first_name|default_if_none:'' }} {{ application.user.last_name|default_if_none:'' }}</p>
+                                        <p class="mb-2"><a
+                                                href="tel:{{ application.user.resume.phone|default_if_none:'' }}"
+                                                class="text-dark">{{ application.user.resume.phone|default_if_none:'' }}</a>
+                                        </p>
+                                        <p class="mb-1">{{ application.user.resume.grade|default_if_none:'' }}</p>
+                                        <p class="mb-1">{{ application.user.resume.education|default_if_none:'' }}</p>
+                                        <p class="mb-1">{{ application.user.resume.experience|default_if_none:'' }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </section>
+                        <!-- END Tab -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Вы уверены что хотите удалить ?
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">{% csrf_token %}
+                            <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Отмена
+                            </button>
+                            <button name="delete" type="submit" class="btn btn-danger"> Удалить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

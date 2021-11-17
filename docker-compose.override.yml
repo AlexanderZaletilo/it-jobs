@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  postgres:
+    volumes: 
+      - ./postgres-data:/var/lib/postgresql/data
+  web:
+    image: web
+    build: ./
+    volumes: 
+      - ./:/code:cached
+    ports: 
+      - ${SERVER_PORT:-8000}:${SERVER_PORT:-8000}
+    command: >
+      bash -c "python wait_for_postgres.py &&
+               ./manage.py migrate &&
+               ./manage.py runserver 0.0.0.0:${SERVER_PORT:-8000}"
+  celery:
+    image: web
+    command: celery -A Vacancies_stepik worker -l INFO
+  celery-beat:
+    image: web
+    command: celery -A Vacancies_stepik beat -l INFO

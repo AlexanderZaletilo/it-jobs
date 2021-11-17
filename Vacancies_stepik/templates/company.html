@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Компания</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+{% extends 'wrapper.html' %}
+{% block container %}
+
+    <main class="container mt-3">
+        <div class="navbar mt-5">
+            <p><a href="/">Назад</a></p>
+        </div>
+        <section>
+            <div class="text-center">
+                <img src="{{ object.logo.url }}" width="130" height="80" alt="">
+            </div>
+            <h1 class="h1 text-center mx-auto mt-0 pt-1" style="font-size: 70px;"><strong>{{ object.name }}</strong>
+            </h1>
+            <p class="text-center pt-1">Компания, {{ vacancies.count }} вакансий</p>
+            <div class="row mt-5">
+                <div class="col-12 col-lg-8 offset-lg-2 m-auto">
+                    {% for object in vacancies %}
+                        {% if not forloop.counter|divisibleby:"2" %}
+                            <div data-aos="flip-left" class="card mb-4">
+                                <div class="card-body px-4">
+                                    <div class="row">
+                                        <div class="col-12 col-md-8 col-lg-9">
+                                            <a href="/vacancies/{{ object.id }}/" class="h2 pb-2">{{ object.title }}</a>
+                                            <p class="mb-2">{{ object.specialty.title }}</p>
+                                            <p>От {{ object.salary_min }} до {{ object.salary_max }} руб.</p>
+                                            <p class="text-muted pt-1">{{ object.published_at }}</p>
+                                            <p class="mb-2"> Кмпания: {{ object.company.name }}</p>
+                                        </div>
+                                        <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
+                                            <a href="/vacancies/{{ object.id }}/"><img
+                                                    src="{{ object.specialty.picture.url }}" width="130" alt=""></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if forloop.counter|divisibleby:"2" %}
+                            <div data-aos="flip-right" class="card mb-4">
+                                <div class="card-body px-4">
+                                    <div class="row">
+                                        <div class="col-12 col-md-8 col-lg-9">
+                                            <a href="/vacancies/{{ object.id }}/" class="h2 pb-2">{{ object.title }}</a>
+                                            <p class="mb-2">{{ object.specialty.title }}</p>
+                                            <p>От {{ object.salary_min }} до {{ object.salary_max }} руб.</p>
+                                            <p class="text-muted pt-1">{{ object.published_at }}</p>
+                                            <p class="mb-2"> Кмпания: {{ object.company.name }}</p>
+                                        </div>
+                                        <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
+                                            <a href="/vacancies/{{ object.id }}/"><img
+                                                    src="{{ object.specialty.picture.url }}" width="130" alt=""></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

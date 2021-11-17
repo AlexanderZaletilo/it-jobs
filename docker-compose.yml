@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:12
+    networks:
+      - internal
+    env_file:
+      - envs/.postgres.env
+  pgbouncer:
+    image: pgbouncer/pgbouncer
+    env_file:
+      - envs/.pgbouncer.env
+    depends_on:
+      - postgres
+    networks:
+      - internal
+  redis:
+    image: "redis:alpine"
+    networks:
+      - internal
+  web:
+    restart: always
+    depends_on:
+      - postgres
+      - pgbouncer
+    env_file:
+      - envs/.django.env
+    networks:
+      - internal
+  celery:
+    restart: always
+    depends_on: 
+      - postgres
+      - pgbouncer
+    env_file: 
+      - envs/.django.env
+    networks: 
+      - internal
+  celery-beat:
+    restart: always
+    depends_on: 
+      - postgres
+      - pgbouncer
+    env_file: 
+      - envs/.django.env
+    networks: 
+      - internal
+networks:
+  internal:
+    external: false

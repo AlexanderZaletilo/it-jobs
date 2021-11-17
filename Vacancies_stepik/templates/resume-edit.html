@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Создать резюме | Джуманджи</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #F6F2E6;
+        }
+    </style>
+</head>
+
+{% extends 'wrapper.html' %}
+{% block container %}
+
+    <main data-aos="zoom-out-down" class="container mt-3 pb-5">
+        <section class="col-12 col-lg-6 offset-lg-3 mt-5 card">
+            <div class="card-body px-3 pb-4">
+                <h1 class="h4 pt-2 pb-3">Мое резюме</h1>
+                {% for message in messages %}
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group pb-2">
+                                <label class="mb-2 text-dark" for="userName">Имя</label>
+                                <input class="form-control" type="text" name="first_name"
+                                       value="{{ form.first_name.value|default_if_none:'' }}" maxlength="32" required
+                                       id="id_first_name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group pb-2">
+                                <label class="mb-2 text-dark" for="userSurname">Фамилия</label>
+                                <input class="form-control" type="text" name="last_name"
+                                       value="{{ form.last_name.value|default_if_none:'' }}" maxlength="32" required
+                                       id="id_last_name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group pb-2">
+                                <label class="mb-2 text-dark" for="userReady">Готовность к работе</label>
+                                <select class="custom-select mr-sm-2" id="status" name="status">
+                                    {% for object in form.status %}
+                                        <a>{{ object }}</a>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group pb-2">
+                                <label class="mb-2 text-dark" for="userPortfolio">Ожидаемое вознаграждение</label>
+                                <input class="form-control" type="number" name="salary"
+                                       value="{{ form.salary.value|default_if_none:'' }}" required id="id_salary">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group pb-2">
+                                <label class="mb-2 text-dark" for="userSpecialization">Специализация</label>
+                                <select class="custom-select mr-sm-2" id="specialty" name="specialty">
+                                    {% for object in form.specialty %}
+                                        <a>{{ object }}</a>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group pb-2">
+                                <label class="mb-2 text-dark" for="userQualification">Квалификация</label>
+                                <select class="custom-select mr-sm-2" id="grade" name="grade">
+                                    {% for object in form.grade %}
+                                        <a>{{ object }}</a>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group pb-2">
+                        <label class="mb-2 text-dark" for="userEducation">Образование</label>
+                        <textarea class="form-control text-uppercase" rows="4" name="education" id="education"
+                                  style="color:#000;">{{ form.education.value|default_if_none:'' }}</textarea>
+                    </div>
+                    <div class="form-group pb-2">
+                        <label class="mb-2 text-dark" for="userExperience">Опыт работы</label>
+                        <textarea class="form-control" rows="4" name="experience" id="experience"
+                                  style="color:#000;">{{ form.experience.value|default_if_none:'' }}</textarea>
+                    </div>
+                    <div class="form-group pb-3">
+                        <label class="mb-2 text-dark" for="userPortfolio">Ссылка на портфолио</label>
+                        <input class="form-control" type="text" placeholder="http://anylink.github.io" name="portfolio"
+                               id="portfolio" value="{{ form.portfolio.value|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-info" value="Сохранить">
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+{% endblock %}
