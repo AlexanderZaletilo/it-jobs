@@ -27,18 +27,70 @@ class Specialty(models.Model):
         return self.code
 
 
+class Currency(models.Model):
+    name = models.CharField(max_length=3)
+
+
+class SiteType(models.Model):
+    name = models.CharField(max_length=255)
+
+
 class Vacancy(models.Model):
-    title = models.CharField(max_length=124, db_index=True)
-    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name='vacancies')
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='vacancies')
-    skills = models.CharField(max_length=124, db_index=True)
-    description = models.TextField()
-    salary_min = models.IntegerField()
-    salary_max = models.IntegerField()
+    title = models.CharField(max_length=255, db_index=True)
+    is_internal = models.BooleanField(default=True)
+    salary_min = models.PositiveIntegerField(null=True, blank=True)
+    salary_max = models.PositiveIntegerField(null=True, blank=True)
+
+    specialty = models.ForeignKey(
+        Specialty,
+        on_delete=models.CASCADE,
+        related_name='vacancies',
+        null=True, blank=True
+    )
+
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name='vacancies',
+        null=True, blank=True
+
+    )
+
+    currency = models.ForeignKey(
+        Currency,
+        on_delete=models.CASCADE,
+        related_name='vacancies',
+        null=True, blank=True
+    )
+
+    url = models.URLField(null=True, blank=True)
+
+    site_type_id = models.ForeignKey(
+        SiteType,
+        on_delete=models.CASCADE,
+        related_name='vacancies',
+        null=True, blank=True
+    )
+    vacancy_id = models.PositiveBigIntegerField(null=True, blank=True)
+    hash = models.CharField(null=True, blank=True, max_length=16)
+
+    address = models.CharField(null=True, blank=True, max_length=255)
+    experience = models.CharField(null=True, blank=True, max_length=255)
+    skills = models.CharField(null=True, blank=True, max_length=255, db_index=True)
+    employment_mode = models.CharField(null=True, blank=True, max_length=255)
+    description = models.TextField(null=True, blank=True)
+
+    company_name = models.CharField(null=True, blank=True, max_length=255, db_index=True)
+    company_link = models.URLField(null=True, blank=True)
+
+    posted = models.DateField(null=True, blank=True)
     published_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        unique_together = ('site_type_id', 'vacancy_id')
 
 
 class Application(models.Model):
