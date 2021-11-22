@@ -1,26 +1,20 @@
-import datetime
-from multiprocessing import Process
-from django.core.mail import send_mail
-from django.core.mail import EmailMessage
-from .queue import SendMail
+import logging
+
 from django.contrib import messages
-from django.db.models import Count
-from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
-from django.template import loader
-from django.urls import reverse_lazy
-from django.views.generic import ListView, View
-from .models import Specialty, Application
-from django.views.generic import CreateView
-from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-from .forms import *
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.postgres.search import SearchVector
-from .token import account_activation_token
-import logging
+from django.db.models import Count
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from django.views.generic import ListView, View
+
+from .forms import *
+from .models import Specialty, Application
 
 logger = logging.getLogger(__name__)
 

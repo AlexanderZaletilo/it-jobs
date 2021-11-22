@@ -7,11 +7,11 @@ User._meta.get_field('email').null = False
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=32, null=True, blank=True, db_index=True)
+    name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     logo = models.ImageField(default='company.png', null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, )
-    location = models.CharField(max_length=32, null=True)
-    description = models.CharField(max_length=32, null=True)
+    location = models.CharField(max_length=255, null=True)
+    description = models.CharField(max_length=255, null=True)
     employee_count = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
@@ -21,7 +21,7 @@ class Company(models.Model):
 class Specialty(models.Model):
     code = models.CharField(max_length=32)
     title = models.CharField(max_length=32, db_index=True)
-    picture = models.ImageField()
+    picture = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.code

@@ -28,8 +28,7 @@
                     <p class="mt-2">{{ object.specialty.title }} </p>
                     <div data-aos="fade-down-right" class="form-group pb-2">
                         <label class="mb-2 text-dark" for="vacancyDescription">Описание вакансии</label>
-                        <p class="text-justify"
-                                  style="color:#000;">{{ object.description }}</p>
+                        {{ object.description | safe }}
                     </div>
                     {% if request.user.is_authenticated == True %}
                         <form data-aos="fade-up"
