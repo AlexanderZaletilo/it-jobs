@@ -9,8 +9,8 @@ class SimpleMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        logger.info(f'request:{request}, response: {response}')
+        logger.info(f"request:{request}, response: {response}")
         return response
 
     def process_exception(self, request, exception):
-        logger.error(f'Messages form middleware: Excpetion is {exception}')
+        logger.error(f"Messages form middleware: Excpetion is {exception}")

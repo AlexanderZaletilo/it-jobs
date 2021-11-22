@@ -27,21 +27,20 @@ def send_letter(useras, resumesa, queryset):
     for resume in queryset:
         resume.token = account_activation_token.make_token(resume.user)
         resume.save()
-        VERIFY_URL = (f'https://jumanji-vacancies.herokuapp.com/{resume.user.resume.token}/verify/')
+        VERIFY_URL = f"https://jumanji-vacancies.herokuapp.com/{resume.user.resume.token}/verify/"
         resume.user.save()
-        html = loader.render_to_string('EmailHTML.html', {
-            'user': resume.user,
-            'url': VERIFY_URL
-        })
-        mail = EmailMessage("Письмо подтверждения", html, to=[f'{resume.user.email}'])
+        html = loader.render_to_string(
+            "EmailHTML.html", {"user": resume.user, "url": VERIFY_URL}
+        )
+        mail = EmailMessage("Письмо подтверждения", html, to=[f"{resume.user.email}"])
         ad.new_send_email(email=mail)
 
 
-send_letter.short_description = 'Sending mails'
+send_letter.short_description = "Sending mails"
 
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'verified')
+    list_display = ("user", "verified")
     actions = [send_letter]
 
 

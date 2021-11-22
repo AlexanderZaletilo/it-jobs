@@ -7,121 +7,165 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacancies', '0001_initial'),
+        ("vacancies", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Currency',
+            name="Currency",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=3)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=3)),
             ],
         ),
         migrations.CreateModel(
-            name='SiteType',
+            name="SiteType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
             ],
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='address',
+            model_name="vacancy",
+            name="address",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='company_link',
+            model_name="vacancy",
+            name="company_link",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='company_name',
-            field=models.CharField(blank=True, db_index=True, max_length=255, null=True),
+            model_name="vacancy",
+            name="company_name",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='employment_mode',
+            model_name="vacancy",
+            name="employment_mode",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='experience',
+            model_name="vacancy",
+            name="experience",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='hash',
+            model_name="vacancy",
+            name="hash",
             field=models.CharField(blank=True, max_length=16, null=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='is_internal',
+            model_name="vacancy",
+            name="is_internal",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='posted',
+            model_name="vacancy",
+            name="posted",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='url',
+            model_name="vacancy",
+            name="url",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='vacancy_id',
+            model_name="vacancy",
+            name="vacancy_id",
             field=models.PositiveBigIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='vacancy',
-            name='company',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='vacancies.company'),
+            model_name="vacancy",
+            name="company",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="vacancies",
+                to="vacancies.company",
+            ),
         ),
         migrations.AlterField(
-            model_name='vacancy',
-            name='description',
+            model_name="vacancy",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='vacancy',
-            name='salary_max',
+            model_name="vacancy",
+            name="salary_max",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='vacancy',
-            name='salary_min',
+            model_name="vacancy",
+            name="salary_min",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='vacancy',
-            name='skills',
-            field=models.CharField(blank=True, db_index=True, max_length=255, null=True),
+            model_name="vacancy",
+            name="skills",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=255, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='vacancy',
-            name='specialty',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='vacancies.specialty'),
+            model_name="vacancy",
+            name="specialty",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="vacancies",
+                to="vacancies.specialty",
+            ),
         ),
         migrations.AlterField(
-            model_name='vacancy',
-            name='title',
+            model_name="vacancy",
+            name="title",
             field=models.CharField(db_index=True, max_length=255),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='currency',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='vacancies.currency'),
+            model_name="vacancy",
+            name="currency",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="vacancies",
+                to="vacancies.currency",
+            ),
         ),
         migrations.AddField(
-            model_name='vacancy',
-            name='site_type_id',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='vacancies.sitetype'),
+            model_name="vacancy",
+            name="site_type_id",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="vacancies",
+                to="vacancies.sitetype",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='vacancy',
-            unique_together={('site_type_id', 'vacancy_id')},
+            name="vacancy",
+            unique_together={("site_type_id", "vacancy_id")},
         ),
     ]

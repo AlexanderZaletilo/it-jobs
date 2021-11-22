@@ -13,7 +13,7 @@ class Base(Configuration):
     # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = '292&qsne+7pl1u#h03@13**@tt^0debpa=2)mb$ue_*k@q+^+4'
+    SECRET_KEY = "292&qsne+7pl1u#h03@13**@tt^0debpa=2)mb$ue_*k@q+^+4"
 
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = False
@@ -21,50 +21,47 @@ class Base(Configuration):
     # Application definition
 
     INSTALLED_APPS = [
-        'django.contrib.admin',
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
-        'vacancies.apps.VacanciesConfig',
-        'crispy_forms',
-        'storages',
-
+        "django.contrib.admin",
+        "django.contrib.auth",
+        "django.contrib.contenttypes",
+        "django.contrib.sessions",
+        "django.contrib.messages",
+        "django.contrib.staticfiles",
+        "vacancies.apps.VacanciesConfig",
+        "crispy_forms",
+        "storages",
     ]
 
     MIDDLEWARE = [
-        'django.middleware.security.SecurityMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-        'core.my_middleware.SimpleMiddleware',
+        "django.middleware.security.SecurityMiddleware",
+        "django.contrib.sessions.middleware.SessionMiddleware",
+        "django.middleware.common.CommonMiddleware",
+        "django.middleware.csrf.CsrfViewMiddleware",
+        "django.contrib.auth.middleware.AuthenticationMiddleware",
+        "django.contrib.messages.middleware.MessageMiddleware",
+        "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "core.my_middleware.SimpleMiddleware",
     ]
 
-    ROOT_URLCONF = 'core.urls'
+    ROOT_URLCONF = "core.urls"
 
     TEMPLATES = [
         {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [os.path.join(BASE_DIR, 'templates')]
-            ,
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'context_processors': [
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.request',
-                    'django.contrib.auth.context_processors.auth',
-                    'django.contrib.messages.context_processors.messages',
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [os.path.join(BASE_DIR, "templates")],
+            "APP_DIRS": True,
+            "OPTIONS": {
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                    "django.contrib.auth.context_processors.auth",
+                    "django.contrib.messages.context_processors.messages",
                 ],
             },
         },
     ]
 
-    WSGI_APPLICATION = 'core.wsgi.application'
+    WSGI_APPLICATION = "core.wsgi.application"
 
     DATABASES = {
         "default": {
@@ -83,16 +80,16 @@ class Base(Configuration):
 
     AUTH_PASSWORD_VALIDATORS = [
         {
-            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+            "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
         },
         {
-            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+            "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
         },
         {
-            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+            "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
         },
         {
-            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+            "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
         },
     ]
 
@@ -162,32 +159,24 @@ class Base(Configuration):
     PROJECT_NAME = os.environ.get("PROJECT_NAME")
 
     LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'myformatter': {
-                'format': '{levelname} {asctime} {module} {process:d} {message}',
-                'style': '{',
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "myformatter": {
+                "format": "{levelname} {asctime} {module} {process:d} {message}",
+                "style": "{",
             },
         },
-        'handlers': {
-            'file': {
-                'level': 'DEBUG',
-                'class': 'logging.FileHandler',
-                'filename': 'log.log',
-                'formatter': 'myformatter',
+        "handlers": {
+            "file": {
+                "level": "DEBUG",
+                "class": "logging.FileHandler",
+                "filename": "log.log",
+                "formatter": "myformatter",
             },
         },
-        'loggers': {
-            'vacancies': {
-                'handlers': ['file'],
-                'level': 'INFO',
-                'propagate': True
-            },
-            'core': {
-                'handlers': ['file'],
-                'level': 'INFO',
-                'propagate': True
-            },
-        }
+        "loggers": {
+            "vacancies": {"handlers": ["file"], "level": "INFO", "propagate": True},
+            "core": {"handlers": ["file"], "level": "INFO", "propagate": True},
+        },
     }

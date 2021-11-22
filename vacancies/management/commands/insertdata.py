@@ -8,11 +8,14 @@ from vacancies.models import Specialty, Company, Vacancy
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        specialties = [Specialty(
-            code=specialty.get("code"),
-            title=specialty.get("title"),
-            picture=specialty.get("picture"),
-        ) for specialty in data.specialties]
+        specialties = [
+            Specialty(
+                code=specialty.get("code"),
+                title=specialty.get("title"),
+                picture=specialty.get("picture"),
+            )
+            for specialty in data.specialties
+        ]
 
         companies = [
             Company(

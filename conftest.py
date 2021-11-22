@@ -10,9 +10,9 @@ test_email = "email@gmail.com"
 
 @pytest.fixture
 def new_user_verified():
-    user_verified = User.objects.create_user(username=test_username,
-                                             password=test_password,
-                                             email=test_email)
+    user_verified = User.objects.create_user(
+        username=test_username, password=test_password, email=test_email
+    )
     resume_verified = Resume.objects.create(user=user_verified, verified=True)
     yield user_verified
     resume_verified.delete()

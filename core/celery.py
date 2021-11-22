@@ -4,7 +4,7 @@ import configurations
 
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 os.environ.setdefault("DJANGO_CONFIGURATION", "Production")
 configurations.setup()
 
