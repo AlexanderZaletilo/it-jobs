@@ -80,7 +80,7 @@ class Vacancy(models.Model):
         blank=True,
     )
     vacancy_id = models.PositiveBigIntegerField(null=True, blank=True)
-    hash = models.CharField(null=True, blank=True, max_length=16)
+    hash = models.BinaryField(null=True, blank=True, max_length=16)
 
     address = models.CharField(null=True, blank=True, max_length=255)
     experience = models.CharField(null=True, blank=True, max_length=255)
