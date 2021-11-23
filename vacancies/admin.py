@@ -5,6 +5,7 @@ from django.template import loader
 from .forms import *
 from .models import Specialty, Application
 from .models import StatusModel, GradeModel
+from .models import Currency, SiteType
 from .queue import SendMail
 from .token import account_activation_token
 
@@ -51,3 +52,5 @@ admin.site.register(StatusModel)
 admin.site.register(Company)
 admin.site.register(Specialty)
 admin.site.register(Application)
+admin.site.register(Currency)
+admin.site.register(SiteType)

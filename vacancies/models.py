@@ -41,7 +41,7 @@ class SiteType(models.Model):
 
 
 class Vacancy(models.Model):
-    title = models.CharField(max_length=255, db_index=True)
+    title = models.CharField(max_length=65535, db_index=True)
     is_internal = models.BooleanField(default=True)
     salary_min = models.PositiveIntegerField(null=True, blank=True)
     salary_max = models.PositiveIntegerField(null=True, blank=True)
@@ -72,7 +72,7 @@ class Vacancy(models.Model):
 
     url = models.URLField(null=True, blank=True)
 
-    site_type_id = models.ForeignKey(
+    site_type = models.ForeignKey(
         SiteType,
         on_delete=models.CASCADE,
         related_name="vacancies",
@@ -82,14 +82,14 @@ class Vacancy(models.Model):
     vacancy_id = models.PositiveBigIntegerField(null=True, blank=True)
     hash = models.BinaryField(null=True, blank=True, max_length=16)
 
-    address = models.CharField(null=True, blank=True, max_length=255)
+    address = models.CharField(null=True, blank=True, max_length=65535)
     experience = models.CharField(null=True, blank=True, max_length=255)
-    skills = models.CharField(null=True, blank=True, max_length=255, db_index=True)
+    skills = models.CharField(null=True, blank=True, max_length=65535, db_index=True)
     employment_mode = models.CharField(null=True, blank=True, max_length=255)
     description = models.TextField(null=True, blank=True)
 
     company_name = models.CharField(
-        null=True, blank=True, max_length=255, db_index=True
+        null=True, blank=True, max_length=65535, db_index=True
     )
     company_link = models.URLField(null=True, blank=True)
 
