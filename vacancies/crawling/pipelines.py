@@ -45,6 +45,7 @@ class RabotaBy:
             url=d['url'],
             site_type_name=spider.name,
             address=d['address'],
+            logo=d['logo'],
             experience=d['experience'],
             employment_mode=d['employment_mode'],
             description=d['description']

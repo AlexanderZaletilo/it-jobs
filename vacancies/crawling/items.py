@@ -34,6 +34,7 @@ class Vacancy(scrapy.Item):
 
     company_name = scrapy.Field()
     company_link = scrapy.Field()
+    logo = scrapy.Field()
 
     posted = scrapy.Field(hash=False)
 

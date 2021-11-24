@@ -98,6 +98,7 @@ class Vacancy(models.Model):
         null=True, blank=True, max_length=65535, db_index=True
     )
     company_link = models.URLField(null=True, blank=True)
+    logo = models.URLField(null=True, blank=True)
 
     posted = models.DateField(null=True, blank=True)
     published_at = models.DateField(auto_now_add=True)

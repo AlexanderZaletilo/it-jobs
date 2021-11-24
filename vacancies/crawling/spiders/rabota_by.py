@@ -44,6 +44,7 @@ class RabotaBySpider(scrapy.Spider):
             'salary': sub_response.xpath(f'normalize-space(.//div[{cls_check("vacancy-salary")}])').get(),
             'company_name': sub_response.xpath('normalize-space(.//*[@data-qa="vacancy-company-name"])').get(),
             'company_link': sub_response.xpath('.//a[@class="vacancy-company-name"]/@href').get(),
+            'logo': sub_response.xpath(f'.//img[{cls_check("vacancy-company-logo__image")}]/@src').get(),
             'address': sub_response.xpath('normalize-space(.//*[@data-qa="vacancy-view-link-location" or @data-qa="vacancy-view-location"])').get(),
             'experience': sub_response.xpath('.//span[@data-qa="vacancy-experience"]/text()').get(),
             'employment_mode': sub_response.xpath('normalize-space(.//p[@data-qa="vacancy-view-employment-mode"])').get(),
