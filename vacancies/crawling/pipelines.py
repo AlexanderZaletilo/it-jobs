@@ -8,6 +8,7 @@ from urllib.parse import urlparse, urlunparse
 import scrapy.exceptions
 
 from .spiders import DevBySpider, HabrSpider, RabotaBySpider
+from .spiders.shared import DropItem
 from .items import Vacancy as VacancyItem
 from vacancies.models import Vacancy, SiteType, Currency as CurrencyDjango
 
@@ -67,8 +68,7 @@ class RabotaBy:
 
         vacancy_id_parsed = RabotaBy.vacancy_id_p.search(url.path)
         if not vacancy_id_parsed:
-            spider.log(f"Can't find vacancy id for url {d['url']} - {url.path}", level=logging.ERROR)
-            raise scrapy.exceptions.DropItem
+            raise DropItem(f"Can't find vacancy id for url {d['url']} - {url.path}", logging.CRITICAL)
         else:
             item['vacancy_id'] = int(vacancy_id_parsed['id'])
 
@@ -77,8 +77,7 @@ class RabotaBy:
 
         posted_parsed = RabotaBy.posted_p.search(d['posted'].replace('\xa0', ' '))
         if not posted_parsed:
-            spider.log(f"Can't find posted date for url {d['url']} - {d['posted']}", level=logging.ERROR)
-            raise scrapy.exceptions.CloseSpider
+            raise DropItem(f"Can't find posted date for url {d['url']} - {d['posted']}", logging.CRITICAL)
         else:
             item['posted'] = date(day=int(posted_parsed['day']),
                                   month=RabotaBy.month_mapping[posted_parsed['month']],
@@ -111,6 +110,7 @@ class SaveDbPipeline:
         if 'currency' in item:
             item['currency_id'] = self.currency_map[item.pop('currency')]
         item['is_internal'] = True
+        item.fill_defaults()
 
         try:
             vacancy = Vacancy.objects.get(site_type_id=item['site_type_id'],
@@ -119,9 +119,10 @@ class SaveDbPipeline:
             vacancy = None
 
         if vacancy:
-            if vacancy.hash == item['hash']:
-                spider.log(f"{item['url']} has the same hash as in db", level=logging.INFO)
-                raise scrapy.exceptions.DropItem
+            if vacancy.hash.tobytes() == item['hash']:
+                raise DropItem(f"{item['url']} has the same hash as in db",
+                               level=logging.INFO,
+                               override_msg=True)
             for key in item:
                 setattr(vacancy, key, item[key])
             vacancy.save(update_fields=list(item))

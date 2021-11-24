@@ -4,14 +4,13 @@ from urllib.parse import urlparse
 
 import scrapy
 
-from .shared import cls_check, normalize_selector_list
+from .shared import cls_check, normalize_selector_list, DropItem
 
 
 class RabotaBySpider(scrapy.Spider):
     name = "rabota_by"
 
     start_urls = ["https://rabota.by/search/vacancy?industry=7&specialization=1"]
-
     allowed_domains = ['rabota.by', 'hh.ru']
 
     def parse(self, response):
@@ -31,11 +30,13 @@ class RabotaBySpider(scrapy.Spider):
     def parse_vacancy(self, response):
 
         if not re.match(r'/vacancy/\d+', urlparse(response.url).path):
-            raise scrapy.exceptions.DropItem
+            raise DropItem(f"Wrong url {response.url} reached parse_vacancy")
 
         sub_response = response.xpath(
             '//div[@id="HH-React-Root"]'
         )
+
+        self.log(f"Parsing vacancy {response.url}", level=logging.DEBUG)
 
         yield {
             'url': response.url,
