@@ -37,6 +37,7 @@ class Base(Configuration):
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
+        "querycount.middleware.QueryCountMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -179,4 +180,17 @@ class Base(Configuration):
             "vacancies": {"handlers": ["file"], "level": "INFO", "propagate": True},
             "core": {"handlers": ["file"], "level": "INFO", "propagate": True},
         },
+    }
+
+    QUERYCOUNT = {
+        'THRESHOLDS': {
+            'MEDIUM': 50,
+            'HIGH': 200,
+            'MIN_TIME_TO_LOG': 0,
+            'MIN_QUERY_COUNT_TO_LOG': 0
+        },
+        'IGNORE_REQUEST_PATTERNS': [],
+        'IGNORE_SQL_PATTERNS': [],
+        'DISPLAY_DUPLICATES': True,
+        'RESPONSE_HEADER': 'X-DjangoQueryCount-Count'
     }

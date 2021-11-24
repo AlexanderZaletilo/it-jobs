@@ -24,7 +24,7 @@ def SearchView(request):
     q = request.GET.get("q", "")
     results = Vacancy.objects.all()
     if q:
-        results = Vacancy.objects.annotate(
+        results = Vacancy.objects.select_related("specialty", "company").annotate(
             search=SearchVector("title", "specialty__title", "company__name", "skills")
         ).filter(search=q)
         return render(request, template_name, {"results": results, "query": q})
@@ -91,14 +91,14 @@ def MyCompanyVacancyView(request):
 
 
 def MyCompany(request):
-    if not Company.objects.filter(owner=request.user):
+    if not Company.objects.select_related("owner").filter(owner=request.user):
         if request.method == "POST":
             Company.objects.create(owner=request.user)
             return render(request, "company-edit.html")
         else:
             return render(request, "company-create.html")
     else:
-        company = Company.objects.get(owner=request.user)
+        company = Company.objects.select_related("owner").get(owner=request.user)
         form = MyCompanyForm(instance=company)
         if request.method == "POST":
             form = MyCompanyForm(request.POST, request.FILES, instance=company)
@@ -106,7 +106,7 @@ def MyCompany(request):
                 messages.info(request, "Информация о вашей компании успешно обновлена!")
                 form.save()
 
-        context = {"form": form, "logo": Company.objects.get(owner=request.user).logo}
+        context = {"form": form, "logo": company.logo}
         return render(request, "company-edit.html", context)
 
 
@@ -218,21 +218,21 @@ class MainView(ListView):
 
 
 class ListVacancies(ListView):
-    model = Vacancy
     context_object_name = "objects"
     template_name = "vacancies.html"
+    queryset = Vacancy.objects.select_related("company", "specialty").all()
 
 
 class VacancyBySpecialization(ListView):
-    model = Vacancy
     template_name = "vacancies.html"
+    queryset = Vacancy.objects.select_related("company", "specialty")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["objects"] = Vacancy.objects.filter(
+        context["objects"] = self.get_queryset().filter(
             specialty__code=self.kwargs["title"]
         )
-        context["specialties"] = get_object_or_404(Specialty, code=self.kwargs["title"])
+        context["specialties"] = Specialty.objects.get(code=self.kwargs["title"])
         return context
 
 
@@ -243,14 +243,14 @@ class DetailCompany(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["object"] = get_object_or_404(Company, id=self.kwargs["id"])
-        context["vacancies"] = Vacancy.objects.filter(
-            company=get_object_or_404(Company, id=self.kwargs["id"])
+        context["vacancies"] = Vacancy.objects.select_related("company", "specialty").filter(
+            company=get_object_or_404(Company.objects.prefetch_related("vacancies"), id=self.kwargs["id"])
         )
         return context
 
 
 def detail_vacancies(request, id):
-    context = {"object": get_object_or_404(Vacancy, id=id)}
+    context = {"object": get_object_or_404(Vacancy.objects.select_related("company", "specialty"), id=id)}
     if request.user.is_authenticated:
         form = ResumeForm(instance=request.user.resume)
         if request.method == "POST":
@@ -262,7 +262,9 @@ def detail_vacancies(request, id):
                 user=request.user,
             )
             return render(request, template_name="sent.html")
-        context = {"object": get_object_or_404(Vacancy, id=id), "form": form}
+        context = {
+            "object": get_object_or_404(Vacancy.objects.select_related("company", "specialty"), id=id),
+            "form": form}
 
     return render(request, "vacancy.html", context=context)
 
