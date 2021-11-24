@@ -35,9 +35,15 @@ class Specialty(models.Model):
 class Currency(models.Model):
     name = models.CharField(max_length=3)
 
+    def __str__(self):
+        return self.name
+
 
 class SiteType(models.Model):
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class Vacancy(models.Model):
