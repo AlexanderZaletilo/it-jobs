@@ -37,7 +37,6 @@ class Base(Configuration):
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
         "django.middleware.csrf.CsrfViewMiddleware",
-        "querycount.middleware.QueryCountMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -194,3 +193,8 @@ class Base(Configuration):
         'DISPLAY_DUPLICATES': True,
         'RESPONSE_HEADER': 'X-DjangoQueryCount-Count'
     }
+
+    # MAILJET
+    MAILJET_PUBLIC_KEY = os.environ.get("MAILJET_PUBLIC_KEY")
+    MAILJET_PRIVATE_KEY = os.environ.get("MAILJET_PRIVATE_KEY")
+    MAILJET_EMAIL_TEMPLATE_ID = int(os.environ.get("MAILJET_EMAIL_TEMPLATE_ID"))

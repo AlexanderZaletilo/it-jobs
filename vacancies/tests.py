@@ -1,10 +1,6 @@
 import pytest
-from django.shortcuts import redirect
-
-from .models import *
-from django.test import TestCase
-from django.urls import reverse
 from django.test import Client
+from django.urls import reverse
 
 test_username = "test"
 test_first_name = "Валерий"

@@ -14,7 +14,9 @@ from django.views.generic import CreateView
 from django.views.generic import ListView, View
 
 from .forms import *
+from core.base.send_emails import send_verification_email_link
 from .models import Specialty, Application
+from .token import account_activation_token
 
 logger = logging.getLogger(__name__)
 
@@ -151,8 +153,15 @@ def RegisterPage(request):
                     first_name=user.first_name,
                     last_name=user.last_name,
                     verified=True,
+                    token=account_activation_token.make_token(user),
                 )
                 resume.save()
+                send_verification_email_link.delay(
+                    to_email=user.email,
+                    to_name=user.first_name,
+                    link=f'http://localhost:8000/{user.resume.token}/verify/',
+                    firstname=user.first_name,
+                )
                 messages.success(request, "Аккаунт был создан для " + username)
                 return HttpResponseRedirect(reverse_lazy("login"))
         context = {"form": form}
@@ -267,6 +276,14 @@ def detail_vacancies(request, id):
             "form": form}
 
     return render(request, "vacancy.html", context=context)
+
+
+def verify(request, token):
+    user = User.objects.get(resume__token=token)
+    if account_activation_token.check_token(user, token):
+        user.resume.verified = True
+        user.resume.save()
+    return redirect('MainPage')
 
 
 def custom_handler404(request, exception):
