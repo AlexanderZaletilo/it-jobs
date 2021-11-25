@@ -17,7 +17,7 @@ urlpatterns = [
     path("mycompany/vacancies/create", create_my_vacancy),
     path("mycompany/vacancies/<int:vacancy_id>", update_my_vacancy),
     path("search/", SearchView),
-    path('<token>/verify/', verify, name='verify'),
+    path("<token>/verify/", verify, name="verify"),
 ]
 
 urlpatterns += [

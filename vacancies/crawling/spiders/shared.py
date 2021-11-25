@@ -20,17 +20,16 @@ def cls_check_list(classes):
 
 
 def normalize_selector_list(list):
-    return [item.xpath('normalize-space(.)').get() for item in list]
+    return [item.xpath("normalize-space(.)").get() for item in list]
 
 
 class DropItem(scrapy.exceptions.DropItem):
-
-    def __init__(self, msg='', level=logging.WARNING, override_msg=False):
+    def __init__(self, msg="", level=logging.WARNING, override_msg=False):
         if msg:
             if override_msg:
                 self.msg = msg
             else:
-                self.msg = msg + '\n' + logformatter.DROPPEDMSG
+                self.msg = msg + "\n" + logformatter.DROPPEDMSG
         else:
             self.msg = logformatter.DROPPEDMSG
         self.level = level
@@ -38,14 +37,14 @@ class DropItem(scrapy.exceptions.DropItem):
 
 class PoliteLogFormatter(logformatter.LogFormatter):
     def dropped(self, item, exception, response, spider):
-        if getattr(exception, 'msg', ''):
+        if getattr(exception, "msg", ""):
             return {
-                'level': exception.level,
-                'msg': exception.msg,
-                'args': {
-                    'exception': exception,
-                    'item': item,
-                }
+                "level": exception.level,
+                "msg": exception.msg,
+                "args": {
+                    "exception": exception,
+                    "item": item,
+                },
             }
         else:
             return super().dropped(item, exception, response, spider)

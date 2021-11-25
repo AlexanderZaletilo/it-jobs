@@ -50,5 +50,5 @@ class Vacancy(scrapy.Item):
             self.setdefault(field, None)
 
 
-hashable = {item for item, val in Vacancy.fields.items() if val.get('hash', True)}
-db_fields = [item for item, val in Vacancy.fields.items() if val.get('db', True)]
+hashable = {item for item, val in Vacancy.fields.items() if val.get("hash", True)}
+db_fields = [item for item, val in Vacancy.fields.items() if val.get("db", True)]

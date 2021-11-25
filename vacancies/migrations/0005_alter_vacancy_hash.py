@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacancies', '0004_auto_20211123_0032'),
+        ("vacancies", "0004_auto_20211123_0032"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='vacancy',
-            name='hash',
+            model_name="vacancy",
+            name="hash",
             field=models.BinaryField(blank=True, max_length=16, null=True),
         ),
     ]

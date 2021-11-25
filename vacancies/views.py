@@ -26,9 +26,15 @@ def SearchView(request):
     q = request.GET.get("q", "")
     results = Vacancy.objects.all()
     if q:
-        results = Vacancy.objects.select_related("specialty", "company").annotate(
-            search=SearchVector("title", "specialty__title", "company__name", "skills")
-        ).filter(search=q)
+        results = (
+            Vacancy.objects.select_related("specialty", "company")
+            .annotate(
+                search=SearchVector(
+                    "title", "specialty__title", "company__name", "skills"
+                )
+            )
+            .filter(search=q)
+        )
         return render(request, template_name, {"results": results, "query": q})
     return render(request, template_name, {"results": results})
 
@@ -159,7 +165,7 @@ def RegisterPage(request):
                 send_verification_email_link.delay(
                     to_email=user.email,
                     to_name=user.first_name,
-                    link=f'http://localhost:8000/{user.resume.token}/verify/',
+                    link=f"http://localhost:8000/{user.resume.token}/verify/",
                     firstname=user.first_name,
                 )
                 messages.success(request, "Аккаунт был создан для " + username)
@@ -252,14 +258,22 @@ class DetailCompany(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["object"] = get_object_or_404(Company, id=self.kwargs["id"])
-        context["vacancies"] = Vacancy.objects.select_related("company", "specialty").filter(
-            company=get_object_or_404(Company.objects.prefetch_related("vacancies"), id=self.kwargs["id"])
+        context["vacancies"] = Vacancy.objects.select_related(
+            "company", "specialty"
+        ).filter(
+            company=get_object_or_404(
+                Company.objects.prefetch_related("vacancies"), id=self.kwargs["id"]
+            )
         )
         return context
 
 
 def detail_vacancies(request, id):
-    context = {"object": get_object_or_404(Vacancy.objects.select_related("company", "specialty"), id=id)}
+    context = {
+        "object": get_object_or_404(
+            Vacancy.objects.select_related("company", "specialty"), id=id
+        )
+    }
     if request.user.is_authenticated:
         form = ResumeForm(instance=request.user.resume)
         if request.method == "POST":
@@ -272,8 +286,11 @@ def detail_vacancies(request, id):
             )
             return render(request, template_name="sent.html")
         context = {
-            "object": get_object_or_404(Vacancy.objects.select_related("company", "specialty"), id=id),
-            "form": form}
+            "object": get_object_or_404(
+                Vacancy.objects.select_related("company", "specialty"), id=id
+            ),
+            "form": form,
+        }
 
     return render(request, "vacancy.html", context=context)
 
@@ -283,7 +300,7 @@ def verify(request, token):
     if account_activation_token.check_token(user, token):
         user.resume.verified = True
         user.resume.save()
-    return redirect('MainPage')
+    return redirect("MainPage")
 
 
 def custom_handler404(request, exception):

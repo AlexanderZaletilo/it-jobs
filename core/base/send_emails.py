@@ -9,12 +9,12 @@ logger = logging.getLogger("django")
 
 
 def _send_template_email(
-        public_key,
-        private_key,
-        to_email,
-        to_name,
-        template_id,
-        variables,
+    public_key,
+    private_key,
+    to_email,
+    to_name,
+    template_id,
+    variables,
 ):
     url = "https://api.mailjet.com/v3.1/send"
     auth = HTTPBasicAuth(public_key, private_key)
@@ -51,5 +51,5 @@ def send_verification_email_link(to_email, to_name, link, firstname):
         to_name,
         template_id=settings.MAILJET_EMAIL_TEMPLATE_ID,
         link=link,
-        firstname=firstname
+        firstname=firstname,
     )
