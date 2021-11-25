@@ -40,7 +40,6 @@ class Base(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
-        "core.my_middleware.SimpleMiddleware",
     ]
 
     ROOT_URLCONF = "core.urls"
@@ -154,8 +153,6 @@ class Base(Configuration):
     CELERY_RESULT_SERIALIZER = "json"
     CELERY_TIMEZONE = TIME_ZONE
 
-    # MAILJET
-
     PROJECT_NAME = os.environ.get("PROJECT_NAME")
 
     LOGGING = {
@@ -179,19 +176,6 @@ class Base(Configuration):
             "vacancies": {"handlers": ["file"], "level": "INFO", "propagate": True},
             "core": {"handlers": ["file"], "level": "INFO", "propagate": True},
         },
-    }
-
-    QUERYCOUNT = {
-        'THRESHOLDS': {
-            'MEDIUM': 50,
-            'HIGH': 200,
-            'MIN_TIME_TO_LOG': 0,
-            'MIN_QUERY_COUNT_TO_LOG': 0
-        },
-        'IGNORE_REQUEST_PATTERNS': [],
-        'IGNORE_SQL_PATTERNS': [],
-        'DISPLAY_DUPLICATES': True,
-        'RESPONSE_HEADER': 'X-DjangoQueryCount-Count'
     }
 
     # MAILJET

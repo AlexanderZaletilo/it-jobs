@@ -1,34 +1,7 @@
-import functools
-import time
-
 from django.contrib import admin
-from django.db import connection, reset_queries
 from django.urls import path
 
 from vacancies.views import *
-
-
-def query_debugger(func):
-    @functools.wraps(func)
-    def inner_func(*args, **kwargs):
-        reset_queries()
-
-        start_queries = len(connection.queries)
-
-        start = time.perf_counter()
-        result = func(*args, **kwargs)
-        end = time.perf_counter()
-
-        end_queries = len(connection.queries)
-
-        print(f"Function : {func.__name__}")
-        print(f"Number of Queries : {end_queries - start_queries}")
-        print(f"Finished in : {(end - start):.2f}s")
-
-        return result
-
-    return inner_func
-
 
 handler404 = custom_handler404
 handler500 = custom_handler500
