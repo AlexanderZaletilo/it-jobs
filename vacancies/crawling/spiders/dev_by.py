@@ -21,15 +21,15 @@ class DevBySpider(scrapy.Spider):
 
         yield {
             'url': response.url,
-            'Title': sub_response.xpath('.//h1[@class="title"]/text()').get(),
-            "Options": list(zip(
+            'title': sub_response.xpath('.//h1[@class="title"]/text()').get(),
+            "options": list(zip(
                 response.xpath("//div[@class=\"vacancy__info-block__item\"]/text()").getall(),
                 response.xpath("//div[@class=\"vacancy__info-block__item\"]/strong/text()").getall()
             )),
-            'Company.Name': sub_response.xpath('.//div[@class="vacancy__header__company-name"]/'
+            'company_name': sub_response.xpath('.//div[@class="vacancy__header__company-name"]/'
                                                'a[contains(@href, "companies.dev.by")]/text()').get(),
-            'Company.Link': sub_response.xpath('.//div[@class="vacancy__header__company-name"]/'
+            'company_link': sub_response.xpath('.//div[@class="vacancy__header__company-name"]/'
                                                'a[contains(@href, "companies.dev.by")]/@href').get(),
-            "Skills": sub_response.xpath("//div[@class=\"vacancy__tags__item\"]/a/text()").getall(),
-            'Description.HTML': sub_response.xpath('.//div[@class="vacancy__text"]').get()
+            "skills": sub_response.xpath("//div[@class=\"vacancy__tags__item\"]/a/text()").getall(),
+            'description': sub_response.xpath('.//div[@class="vacancy__text"]').get()
          }

@@ -35,9 +35,15 @@ class Specialty(models.Model):
 class Currency(models.Model):
     name = models.CharField(max_length=3)
 
+    def __str__(self):
+        return self.name
+
 
 class SiteType(models.Model):
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class Vacancy(models.Model):
@@ -92,6 +98,7 @@ class Vacancy(models.Model):
         null=True, blank=True, max_length=65535, db_index=True
     )
     company_link = models.URLField(null=True, blank=True)
+    logo = models.URLField(null=True, blank=True)
 
     posted = models.DateField(null=True, blank=True)
     published_at = models.DateField(auto_now_add=True)
