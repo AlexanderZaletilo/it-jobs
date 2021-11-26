@@ -56,6 +56,10 @@ class Base(Configuration):
                     "django.contrib.auth.context_processors.auth",
                     "django.contrib.messages.context_processors.messages",
                 ],
+                'libraries': {
+                    'proper_paginate': 'core.templatetags.proper_paginate',
+                    'url_replace': 'core.templatetags.url_replace',
+                }
             },
         },
     ]
