@@ -9,6 +9,7 @@ User._meta.get_field("email").null = False
 class Company(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     logo = models.ImageField(default="company.png", null=True, blank=True)
+
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -16,8 +17,20 @@ class Company(models.Model):
         blank=True,
     )
     location = models.CharField(max_length=255, null=True)
-    description = models.CharField(max_length=255, null=True)
+    description = models.TextField(null=True, blank=True)
     employee_count = models.IntegerField(null=True, blank=True)
+
+    external_site = models.ForeignKey(
+        "SiteType",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    external_logo_url = models.URLField(null=True, blank=True)
+    external_url = models.URLField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ("external_site_id", "external_url")
 
     def __str__(self):
         return self.name
@@ -93,12 +106,6 @@ class Vacancy(models.Model):
     skills = models.CharField(null=True, blank=True, max_length=65535, db_index=True)
     employment_mode = models.CharField(null=True, blank=True, max_length=255)
     description = models.TextField(null=True, blank=True)
-
-    company_name = models.CharField(
-        null=True, blank=True, max_length=65535, db_index=True
-    )
-    company_link = models.URLField(null=True, blank=True)
-    logo = models.URLField(null=True, blank=True)
 
     posted = models.DateField(null=True, blank=True)
     published_at = models.DateField(auto_now_add=True)

@@ -9,6 +9,19 @@ import hashlib
 import scrapy
 
 
+class Company(scrapy.Item):
+    name = scrapy.Field()
+
+    location = scrapy.Field()
+    description = scrapy.Field()
+    employee_count = scrapy.Field()
+
+    external_site = scrapy.Field()
+    external_site_id = scrapy.Field()
+    external_url = scrapy.Field()
+    external_logo_url = scrapy.Field()
+
+
 class Vacancy(scrapy.Item):
     title = scrapy.Field()
     is_internal = scrapy.Field(hash=False)
@@ -32,9 +45,9 @@ class Vacancy(scrapy.Item):
     employment_mode = scrapy.Field()
     description = scrapy.Field()
 
-    company_name = scrapy.Field()
-    company_link = scrapy.Field()
-    logo = scrapy.Field()
+    company = scrapy.Field(hash=False)
+    company_name = scrapy.Field(hash=False, db=False)
+    company_link = scrapy.Field(hash=False, db=False)
 
     posted = scrapy.Field(hash=False)
 
@@ -46,8 +59,14 @@ class Vacancy(scrapy.Item):
         return hashlib.md5(json.dumps(to_be_encoded, sort_keys=True).encode()).digest()
 
     def fill_defaults(self):
-        for field in db_fields:
-            self.setdefault(field, None)
+        to_be_deleted = set()
+        for field in self:
+            if field in db_fields:
+                self.setdefault(field, None)
+            else:
+                to_be_deleted.add(field)
+        for field in to_be_deleted:
+            del self[field]
 
 
 hashable = {item for item, val in Vacancy.fields.items() if val.get("hash", True)}

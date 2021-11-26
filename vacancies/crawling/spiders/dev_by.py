@@ -2,6 +2,9 @@ import logging
 
 import scrapy
 
+from vacancies.models import Company, SiteType
+from .shared import cls_check, normalize_selector_list, DropItem
+
 
 class DevBySpider(scrapy.Spider):
     name = "dev_by"
@@ -46,4 +49,30 @@ class DevBySpider(scrapy.Spider):
                 '//div[@class="vacancy__tags__item"]/a/text()'
             ).getall(),
             "description": sub_response.xpath('.//div[@class="vacancy__text"]').get(),
+        }
+
+
+class DevByCompanySpider(scrapy.Spider):
+    name = "dev_by_company"
+
+    allowed_domains = ["jobs.dev.by"]
+
+    def start_requests(self):
+        urls = Company.objects.filter(external_site=SiteType.objects.get(name='dev_by'))\
+            .values_list('external_url', flat=True)
+
+        self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse)
+
+    def parse(self, response):
+        sub_response = response.xpath('//div[@class="page__content"]')
+
+        yield {
+            "url": response.url,
+            'logo_url': sub_response.xpath('.//div[@class="widget-companies-header"]//img[contains(@src, "logos")]/@src').get(),
+            "name": sub_response.xpath('.//div[@class="widget-companies-header"]//h1/text()').get(),
+            "description": sub_response.xpath(f'.//div[{cls_check("description")}]/div[@class="text"]').get(),
+            'address': sub_response.xpath(f'normalize-space(.//div[@class="info-ofice"])').get(),
+            'employees': sub_response.xpath(f'.//*[@class="employee-count"]/text()').get()
         }

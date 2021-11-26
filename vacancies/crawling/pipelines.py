@@ -5,10 +5,10 @@ from enum import Enum
 from datetime import date
 from urllib.parse import urlparse, urlunparse
 
-from .spiders import DevBySpider, HabrSpider, RabotaBySpider
+from .spiders import DevBySpider, DevByCompanySpider, HabrSpider, RabotaBySpider
 from .spiders.shared import DropItem
-from .items import Vacancy as VacancyItem
-from vacancies.models import Vacancy, SiteType, Currency as CurrencyDjango
+from .items import Vacancy as VacancyItem, Company as CompanyItem
+from vacancies.models import Vacancy, SiteType, Currency as CurrencyDjango, Company
 
 
 class Currency(Enum):
@@ -116,9 +116,12 @@ class RabotaBy:
 
 class DevBy:
 
+    name = 'dev_by'
     vacancy_id_p = re.compile(r"(?<=/vacancies/)(?P<id>\d+)")
 
     salary_p = re.compile(r"(от )?\$?(?P<min>\d+)?—?(до )?\$?(?P<max>\d+)?")
+
+    e_count_p = re.compile(r"\d+")
 
     @classmethod
     def process_item(cls, d, spider):
@@ -127,7 +130,7 @@ class DevBy:
         item = VacancyItem(
             title=d["title"],
             url=d["url"],
-            site_type_name=spider.name,
+            site_type_name=cls.name,
             company_name=d["company_name"],
             company_link=d["company_link"],
             description=d["description"],
@@ -184,11 +187,32 @@ class DevBy:
 
         return item
 
+    @classmethod
+    def process_company(cls, d, spider):
+        for field in ('name', 'description', 'employees'):
+            if not d[field]:
+                raise DropItem(f"Can't extract {field} field", level=logging.ERROR)
+
+        item = CompanyItem(
+            name=d['name'],
+            location=d['address'],
+            description=d['description'],
+            external_logo_url=d['logo_url'],
+            external_url=d['url'],
+            external_site=cls.name,
+        )
+
+        item['employee_count'] = int(cls.e_count_p.search(d['employees']).group(0))
+
+        return item
+
 
 class VacancyPipeline:
     def process_item(self, item, spider):
         if isinstance(spider, RabotaBySpider):
             return RabotaBy.process_item(item, spider)
+        elif isinstance(spider, DevByCompanySpider):
+            return DevBy.process_company(item, spider)
         elif isinstance(spider, DevBySpider):
             return DevBy.process_item(item, spider)
         else:
@@ -206,11 +230,21 @@ class SaveDbPipeline:
             for spider in (RabotaBySpider, DevBySpider, HabrSpider)
         }
 
-    def process_item(self, item, spider):
+    def process_vacancy(self, item, spider):
         item["site_type_id"] = self.site_type_map[item.pop("site_type_name")]
         if "currency" in item:
             item["currency_id"] = self.currency_map[item.pop("currency")]
         item["is_internal"] = True
+
+        company = Company.objects.get_or_create(
+            external_site_id=item['site_type_id'],
+            external_url=item['company_link']
+        )[0]
+        if company.name != item['company_name']:
+            company.name = item['company_name']
+            company.save()
+        item['company'] = company
+
         item.fill_defaults()
 
         try:
@@ -237,3 +271,17 @@ class SaveDbPipeline:
         else:
             spider.log(f"Added new vacancy {item['url']}", level=logging.INFO)
             Vacancy.objects.create(**item)
+
+    def process_company(self, item, spider):
+        spider.log(f"Updating company {item['external_url']}", level=logging.INFO)
+
+        Company.objects.filter(
+            external_site_id=self.site_type_map[item.pop("external_site")],
+            external_url=item.pop("external_url")
+        ).update(**item)
+
+    def process_item(self, item, spider):
+        if not spider.name.endswith('company'):
+            self.process_vacancy(item, spider)
+        else:
+            self.process_company(item, spider)
