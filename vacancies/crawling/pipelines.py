@@ -234,7 +234,7 @@ class SaveDbPipeline:
         item["site_type_id"] = self.site_type_map[item.pop("site_type_name")]
         if "currency" in item:
             item["currency_id"] = self.currency_map[item.pop("currency")]
-        item["is_internal"] = True
+        item["is_internal"] = False
 
         company = Company.objects.get_or_create(
             external_site_id=item['site_type_id'],
