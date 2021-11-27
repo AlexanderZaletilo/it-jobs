@@ -13,7 +13,8 @@ class RabotaBySpider(BaseSpider):
     start_urls = ["https://rabota.by/search/vacancy?industry=7&specialization=1&area=16"]
     allowed_domains = ["rabota.by", "hh.ru"]
 
-    def parse_company(self, response):
+    @staticmethod
+    def parse_company(response):
         sub_response = response.xpath('//div[@id="HH-React-Root"]')
 
         if not sub_response.get():
@@ -39,6 +40,8 @@ class RabotaBySpider(BaseSpider):
         self.log(f"Found {len(links)} link(s)", level=logging.INFO)
         for link in links:
             yield scrapy.Request(url=link, callback=self.parse_vacancy)
+            if self.should_stop():
+                return
 
         next = response.xpath('//a[@data-qa="pager-next"]/@href').get()
         if next is not None:

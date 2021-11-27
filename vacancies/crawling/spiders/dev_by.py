@@ -31,6 +31,8 @@ class DevBySpider(BaseSpider):
         self.log(f"Found {len(links)} jobs.dev.by vacancies", level=logging.INFO)
         for link in links:
             yield response.follow(url=link, callback=self.parse_vacancy)
+            if self.should_stop():
+                return
 
     @staticmethod
     def parse_vacancy(response):

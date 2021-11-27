@@ -19,9 +19,15 @@ def normalize_selector_list(list):
 
 
 class BaseSpider(scrapy.Spider):
-    def __init__(self, *args, is_vacancy=True, **kwargs):
+    def __init__(self, *args, is_vacancy=True, limit=99999, **kwargs):
         super().__init__(*args, **kwargs)
         self.is_vacancy = is_vacancy
+        self.limit = limit
+        self.parsed = 0
+
+    def should_stop(self):
+        self.parsed += 1
+        return self.parsed >= self.limit
 
     def start_requests(self):
         if self.is_vacancy:
@@ -34,6 +40,8 @@ class BaseSpider(scrapy.Spider):
             self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
             for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse_company)
+                if self.should_stop():
+                    return
 
 
 class DropItem(scrapy.exceptions.DropItem):

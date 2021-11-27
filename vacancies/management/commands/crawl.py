@@ -5,14 +5,18 @@ from django.core.management import BaseCommand
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        # Positional arguments
         parser.add_argument("spider")
-        parser.add_argument("type")
+        parser.add_argument('--vacancies', dest='is_vacancy', action='store_true')
+        parser.add_argument('--companies', dest='is_vacancy', action='store_false')
+        parser.set_defaults(is_vacancy=True)
+        parser.add_argument('--limit', type=int, default=9999999)
 
     def handle(self, *args, **options):
         process = CrawlerProcess(get_project_settings())
 
         # var = name of spider
 
-        process.crawl(options["spider"], is_vacancy=options['type'] == 'vacancy')
+        process.crawl(options["spider"],
+                      is_vacancy=options['is_vacancy'],
+                      limit=options['limit'])
         process.start()
