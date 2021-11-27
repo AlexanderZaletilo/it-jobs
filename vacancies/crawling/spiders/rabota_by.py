@@ -5,12 +5,16 @@ from urllib.parse import urlparse
 import scrapy
 
 from .shared import cls_check, normalize_selector_list, DropItem
+from vacancies.models import Company, SiteType
+
+
+NAME = 'rabota_by'
 
 
 class RabotaBySpider(scrapy.Spider):
-    name = "rabota_by"
+    name = NAME
 
-    start_urls = ["https://rabota.by/search/vacancy?industry=7&specialization=1"]
+    start_urls = ["https://rabota.by/search/vacancy?industry=7&specialization=1&area=16"]
     allowed_domains = ["rabota.by", "hh.ru"]
 
     def parse(self, response):
@@ -74,3 +78,35 @@ class RabotaBySpider(scrapy.Spider):
                 'normalize-space(.//p[@class="vacancy-creation-time"])'
             ).get(),
         }
+
+
+class RabotaByCompanySpider(scrapy.Spider):
+    name = f"{NAME}_company"
+
+    allowed_domains = ["rabota.by", "hh.ru"]
+
+    def start_requests(self):
+        urls = Company.objects.filter(external_site=SiteType.objects.get(name=NAME))\
+            .values_list('external_url', flat=True)
+
+        self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse)
+
+    def parse(self, response):
+        sub_response = response.xpath('//div[@id="HH-React-Root"]')
+
+        if not sub_response.get():
+            yield {
+                'url': response.url,
+                'logo_url': response.xpath('//img[contains(@class, "logo") and contains(@class, "tmpl")'
+                                           ' and not(contains(@class, "mobile"))]/@src').get(),
+                'name': None, 'description': None, 'address': None}
+        else:
+            yield {
+                "url": response.url,
+                'logo_url': sub_response.xpath('.//img[@data-qa="company-logo-image"]/@src').get(),
+                "name": sub_response.xpath('normalize-space(.//*[@data-qa="company-header-title-name"])').get(),
+                "description": sub_response.xpath(f'.//div[@data-qa="company-description-text"]').get(),
+                'address': sub_response.xpath(f'.//div[@data-qa="sidebar-text-color"]/div[1]/text()').get()
+            }

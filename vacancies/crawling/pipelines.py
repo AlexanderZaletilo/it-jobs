@@ -5,7 +5,7 @@ from enum import Enum
 from datetime import date
 from urllib.parse import urlparse, urlunparse
 
-from .spiders import DevBySpider, DevByCompanySpider, HabrSpider, RabotaBySpider
+from .spiders import DevBySpider, DevByCompanySpider, HabrSpider, RabotaBySpider, RabotaByCompanySpider
 from .spiders.shared import DropItem
 from .items import Vacancy as VacancyItem, Company as CompanyItem
 from vacancies.models import Vacancy, SiteType, Currency as CurrencyDjango, Company
@@ -19,7 +19,7 @@ class Currency(Enum):
 
 
 class RabotaBy:
-
+    name = 'rabota_by'
     vacancy_id_p = re.compile(r"(?<=/vacancy/)(?P<id>\d+)")
 
     posted_p = re.compile(r"(?P<day>\d\d?) (?P<month>\w+) (?P<year>\d{4})")
@@ -54,6 +54,21 @@ class RabotaBy:
     }
 
     @classmethod
+    def process_company(cls, d, spider):
+        item = CompanyItem(
+            location=d['address'],
+            description=d['description'],
+            external_logo_url=d['logo_url'],
+            external_url=d['url'],
+            external_site=cls.name,
+        )
+
+        if d['name']:
+            item['name'] = d['name']
+
+        return item
+
+    @classmethod
     def process_item(cls, d, spider):
         url = urlparse(d["url"])
 
@@ -62,7 +77,6 @@ class RabotaBy:
             url=d["url"],
             site_type_name=spider.name,
             address=d["address"],
-            logo=d["logo"],
             experience=d["experience"],
             employment_mode=d["employment_mode"],
             description=d["description"],
@@ -197,12 +211,15 @@ class DevBy:
             name=d['name'],
             location=d['address'],
             description=d['description'],
-            external_logo_url=d['logo_url'].replace("pre_medium_white", "original"),
+            external_logo_url=d['logo_url'],
             external_url=d['url'],
             external_site=cls.name,
         )
+        if item['external_logo_url']:
+            item['external_logo_url'] = item['external_logo_url'].replace("pre_medium_white", "original")
 
-        item['employee_count'] = int(cls.e_count_p.search(d['employees']).group(0))
+        if cls.e_count_p.search(d['employees']):
+            item['employee_count'] = int(cls.e_count_p.search(d['employees']).group(0))
 
         return item
 
@@ -211,10 +228,14 @@ class VacancyPipeline:
     def process_item(self, item, spider):
         if isinstance(spider, RabotaBySpider):
             return RabotaBy.process_item(item, spider)
+        elif isinstance(spider, RabotaByCompanySpider):
+            return RabotaBy.process_company(item, spider)
+
         elif isinstance(spider, DevByCompanySpider):
             return DevBy.process_company(item, spider)
         elif isinstance(spider, DevBySpider):
             return DevBy.process_item(item, spider)
+
         else:
             raise DropItem(f"unsupported spider {spider.name}", override_msg=True)
 
