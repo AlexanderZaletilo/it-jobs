@@ -5,7 +5,7 @@ from enum import Enum
 from datetime import date
 from urllib.parse import urlparse, urlunparse
 
-from .spiders import DevBySpider, DevByCompanySpider, HabrSpider, RabotaBySpider, RabotaByCompanySpider
+from .spiders import DevBySpider, HabrSpider, RabotaBySpider
 from .spiders.shared import DropItem
 from .items import Vacancy as VacancyItem, Company as CompanyItem
 from vacancies.models import Vacancy, SiteType, Currency as CurrencyDjango, Company
@@ -69,7 +69,7 @@ class RabotaBy:
         return item
 
     @classmethod
-    def process_item(cls, d, spider):
+    def process_vacancy(cls, d, spider):
         url = urlparse(d["url"])
 
         item = VacancyItem(
@@ -138,7 +138,7 @@ class DevBy:
     e_count_p = re.compile(r"\d+")
 
     @classmethod
-    def process_item(cls, d, spider):
+    def process_vacancy(cls, d, spider):
         url = urlparse(d["url"])
 
         item = VacancyItem(
@@ -224,20 +224,10 @@ class DevBy:
         return item
 
 
-class VacancyPipeline:
+class MainPipeline:
     def process_item(self, item, spider):
-        if isinstance(spider, RabotaBySpider):
-            return RabotaBy.process_item(item, spider)
-        elif isinstance(spider, RabotaByCompanySpider):
-            return RabotaBy.process_company(item, spider)
-
-        elif isinstance(spider, DevByCompanySpider):
-            return DevBy.process_company(item, spider)
-        elif isinstance(spider, DevBySpider):
-            return DevBy.process_item(item, spider)
-
-        else:
-            raise DropItem(f"unsupported spider {spider.name}", override_msg=True)
+        method = 'process_' + ('vacancy' if spider.is_vacancy else 'company')
+        return getattr(eval(spider.processor), method)(item, spider)
 
 
 class SaveDbPipeline:
@@ -302,7 +292,7 @@ class SaveDbPipeline:
         ).update(**item)
 
     def process_item(self, item, spider):
-        if not spider.name.endswith('company'):
+        if spider.is_vacancy:
             self.process_vacancy(item, spider)
         else:
             self.process_company(item, spider)

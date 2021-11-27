@@ -63,7 +63,7 @@ DOWNLOAD_DELAY = 1
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "vacancies.crawling.pipelines.VacancyPipeline": 1,
+    "vacancies.crawling.pipelines.MainPipeline": 1,
     "vacancies.crawling.pipelines.SaveDbPipeline": 2,
 }
 

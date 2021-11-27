@@ -7,11 +7,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument("spider")
+        parser.add_argument("type")
 
     def handle(self, *args, **options):
         process = CrawlerProcess(get_project_settings())
 
         # var = name of spider
 
-        process.crawl(options["spider"])
+        process.crawl(options["spider"], is_vacancy=options['type'] == 'vacancy')
         process.start()

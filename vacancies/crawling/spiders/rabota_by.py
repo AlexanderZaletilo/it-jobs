@@ -4,20 +4,34 @@ from urllib.parse import urlparse
 
 import scrapy
 
-from .shared import cls_check, normalize_selector_list, DropItem
-from vacancies.models import Company, SiteType
+from .shared import cls_check, normalize_selector_list, DropItem, BaseSpider
 
 
-NAME = 'rabota_by'
-
-
-class RabotaBySpider(scrapy.Spider):
-    name = NAME
-
+class RabotaBySpider(BaseSpider):
+    name = 'rabota_by'
+    processor = "RabotaBy"
     start_urls = ["https://rabota.by/search/vacancy?industry=7&specialization=1&area=16"]
     allowed_domains = ["rabota.by", "hh.ru"]
 
-    def parse(self, response):
+    def parse_company(self, response):
+        sub_response = response.xpath('//div[@id="HH-React-Root"]')
+
+        if not sub_response.get():
+            yield {
+                'url': response.url,
+                'logo_url': response.xpath('//img[contains(@class, "logo") and contains(@class, "tmpl")'
+                                           ' and not(contains(@class, "mobile"))]/@src').get(),
+                'name': None, 'description': None, 'address': None}
+        else:
+            yield {
+                "url": response.url,
+                'logo_url': sub_response.xpath('.//img[@data-qa="company-logo-image"]/@src').get(),
+                "name": sub_response.xpath('normalize-space(.//*[@data-qa="company-header-title-name"])').get(),
+                "description": sub_response.xpath(f'.//div[@data-qa="company-description-text"]').get(),
+                'address': sub_response.xpath(f'.//div[@data-qa="sidebar-text-color"]/div[1]/text()').get()
+            }
+
+    def parse_vacancies(self, response):
         links = response.xpath(
             '//a[@data-qa="vacancy-serp__vacancy-title"]/@href'
         ).getall()
@@ -29,7 +43,7 @@ class RabotaBySpider(scrapy.Spider):
         next = response.xpath('//a[@data-qa="pager-next"]/@href').get()
         if next is not None:
             self.log(f"Tracking next page {next}", level=logging.INFO)
-            yield response.follow(url=next, callback=self.parse)
+            yield response.follow(url=next, callback=self.parse_vacancies)
         else:
             self.log(f"Last page", level=logging.INFO)
 
@@ -78,35 +92,3 @@ class RabotaBySpider(scrapy.Spider):
                 'normalize-space(.//p[@class="vacancy-creation-time"])'
             ).get(),
         }
-
-
-class RabotaByCompanySpider(scrapy.Spider):
-    name = f"{NAME}_company"
-
-    allowed_domains = ["rabota.by", "hh.ru"]
-
-    def start_requests(self):
-        urls = Company.objects.filter(external_site=SiteType.objects.get(name=NAME))\
-            .values_list('external_url', flat=True)
-
-        self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
-        for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse)
-
-    def parse(self, response):
-        sub_response = response.xpath('//div[@id="HH-React-Root"]')
-
-        if not sub_response.get():
-            yield {
-                'url': response.url,
-                'logo_url': response.xpath('//img[contains(@class, "logo") and contains(@class, "tmpl")'
-                                           ' and not(contains(@class, "mobile"))]/@src').get(),
-                'name': None, 'description': None, 'address': None}
-        else:
-            yield {
-                "url": response.url,
-                'logo_url': sub_response.xpath('.//img[@data-qa="company-logo-image"]/@src').get(),
-                "name": sub_response.xpath('normalize-space(.//*[@data-qa="company-header-title-name"])').get(),
-                "description": sub_response.xpath(f'.//div[@data-qa="company-description-text"]').get(),
-                'address': sub_response.xpath(f'.//div[@data-qa="sidebar-text-color"]/div[1]/text()').get()
-            }

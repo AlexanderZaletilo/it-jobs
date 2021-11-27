@@ -1,14 +1,9 @@
 import logging
-from enum import IntEnum, auto
 
 import scrapy.exceptions
 from scrapy import logformatter
 
-
-class SpiderType(IntEnum):
-    RABOTA = auto()
-    DEV = auto()
-    HABR = auto()
+from vacancies.models import Company, SiteType
 
 
 def cls_check(klass):
@@ -21,6 +16,24 @@ def cls_check_list(classes):
 
 def normalize_selector_list(list):
     return [item.xpath("normalize-space(.)").get() for item in list]
+
+
+class BaseSpider(scrapy.Spider):
+    def __init__(self, *args, is_vacancy=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.is_vacancy = is_vacancy
+
+    def start_requests(self):
+        if self.is_vacancy:
+            for url in self.start_urls:
+                yield scrapy.Request(url=url, callback=self.parse_vacancies)
+        else:
+            urls = Company.objects.filter(external_site=SiteType.objects.get(name=self.name)) \
+                .values_list('external_url', flat=True)
+
+            self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
+            for url in urls:
+                yield scrapy.Request(url=url, callback=self.parse_company)
 
 
 class DropItem(scrapy.exceptions.DropItem):
