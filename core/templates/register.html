@@ -2,87 +2,104 @@
 <html lang="ru">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Регистрация</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <style>
-    body {
-	background: linear-gradient(-46deg, #4b6cb7, #182848, #4b6cb7 );
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
+    card {
+        border-radius: 16px;
+    }
 
-}
+    h1, p, a, label {
+        color: #1b1e21;
+    }
 
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
+    body, html {
+        background-color: #000;
+        color: #fff;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+    }
+
+    canvas {
+        z-index: -1;
+        position: absolute;
+        top: 0;
+        left: 0
+    }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" integrity="sha256-qM7QTJSlvtPSxVRjVWNM2OfTAz/3k5ovHOKmKXuYMO4=" crossorigin="anonymous"></script>
+<style>
+    .card {
+        border-radius: 16px;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"
+        integrity="sha256-qM7QTJSlvtPSxVRjVWNM2OfTAz/3k5ovHOKmKXuYMO4=" crossorigin="anonymous"></script>
 
 {% extends 'wrapper.html' %}
 {% block container %}
-  <div data-aos="zoom-in" class="container py-5">
-    <div class="row">
-      <div class="col-6 col-lg-5 offset-3 offset-lg-4 card">
-        <form class="form-signin p-3" method="post">
-            {% csrf_token %}
-          <div class="text-center mt-5 b-1">
+    <main class="container mt-5">
+        <canvas id="bgCanvas"></canvas>
+        <section data-aos="zoom-in" class="area col-8 col-lg-4 offset-2 offset-lg-4 card">
+            <div class="row">
+                <div class="mx-1">
+                    <form class="form-signin p-5" method="post">
+                        {% csrf_token %}
+                        <div class="text-center mt-1 b-1">
+                            <h1 class="h3 mb-3 font-weight-normal" data-href-template="/">Джуманджи</h1>
+                            <p class="h5 font-weight-light">Создайте аккаунт</p>
+                        </div>
+                        <div class="mt-5 form-label-group">
+                            <input type="text" placeholder="Логин" name="username" maxlength="150" autofocus required id="id_username"
+                                   class="form-control">
+                            <label for="inputLogin"></label>
+                        </div>
 
-            <h1 class="h3 mb-3 font-weight-normal" data-href-template="/">Джуманджи</h1>
-            <p class="h5 font-weight-light">Создайте аккаунт</p>
-          </div>
-          <div class="mt-5 form-label-group">
-            <p class="text-muted">Логин</p>
-            <input type="text" name="username" maxlength="150" autofocus required id="id_username" class="form-control">
-            <label for="inputLogin"></label>
-          </div>
+                        <div class=" input-group mb-3">
+                            <input type="text" placeholder="Имя" name="first_name" maxlength="254" id="id_email"
+                                   class="form-control">
+                            <label for="inputSurname"></label>
 
-          <div class=" form-label-group">
-            <p class="text-muted">Имя</p>
-              <input type="text" name="first_name" maxlength="254" id="id_email" class="form-control">
-            <label for="inputSurname"></label>
-          </div>
+                            <input type="text" placeholder="Фамилия" name="last_name" maxlength="254" id="id_email"
+                                   class="form-control">
+                            <label for="inputSurname"></label>
+                        </div>
 
-            <div class=" form-label-group">
-            <p class="text-muted">Фамилия</p>
-            <input type="text" name="last_name" maxlength="254" id="id_email" class="form-control">
-            <label for="inputSurname"></label>
-          </div>
+                        <div class=" form-label-group">
+                            <input type="email" placeholder="Email" name="email" maxlength="254" id="id_email"
+                                   class="form-control">
+                            <label for="inputSurname"></label>
+                        </div>
 
-            <div class=" form-label-group">
-            <p class="text-muted">Email</p>
-            <input type="email" name="email" maxlength="254" id="id_email" class="form-control">
-            <label for="inputSurname"></label>
-          </div>
+                        <div class="input-group mb-3">
+                            <input type="password" name="password1" autocomplete="new-password" required
+                                   id="id_password1"
+                                   class="form-control"
+                                   placeholder="Пароль">
+                            <input type="password" name="password2" autocomplete="new-password" required
+                                   id="id_password2"
+                                   class="form-control"
+                                   placeholder="Подтвердить">
+                            <label for="inputPassword"></label>
+                        </div>
 
-          <div class="form-label-group">
-            <p class="text-muted"> Пароль</p>
-            <input type="password" name="password1" autocomplete="new-password" required id="id_password1" class="form-control">
-              <p class="text-muted">Подтвердите пароль</p>
-            <input type="password" name="password2" autocomplete="new-password" required id="id_password2" class="form-control">
-            <label for="inputPassword"></label>
-          </div>
+                        <div class="checkbox mb-3"></div>
+                        <button class="btn btn-primary btn-lg btn-block" type="submit">Зарегистрироваться</button>
+                        {{ form.errors }}
+                    </form>
 
-          <div class="checkbox mb-3"></div>
-          <button class="btn btn-primary btn-lg btn-block" type="submit">Зарегистрироваться</button>
-            {{ form.errors }}
-        </form>
-
-         <div class="mt-4 text-center" ><p>Уже есть аккаунт? <a href="/login">Войдите!</a></p></div>
+                    <div class="mt-4 text-center"><p>Уже есть аккаунт? <a href="/login">Войдите!</a></p></div>
 
 
-
-      </div>
-    </div>
-  </div>
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock %}

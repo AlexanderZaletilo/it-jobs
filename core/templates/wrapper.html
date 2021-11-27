@@ -1,98 +1,110 @@
-
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <style>
     @import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900");
-@import url("https://cdn.linearicons.com/free/1.0.0/icon-font.min.css");
-body {
-  font-family: 'Montserrat', sans-serif;
-}
+    @import url("https://cdn.linearicons.com/free/1.0.0/icon-font.min.css");
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+    }
 
 
 </style>
 <style>
-.navbar{
-    border-radius:13px;
-}
-.card {
-    border-radius:15px;
-  display:-webkit-box;
-  display:-ms-flexbox;
-  display:flex;
-  -webkit-box-orient:vertical;
-  -webkit-box-direction:normal;
-  -ms-flex-direction:column;
-  flex-direction:column;
-  position:relative;
-  -webkit-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  -o-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  overflow:hidden;
-}
+    .navbar {
+        border-radius: 13px;
+    }
 
-.card:hover {
-    border-radius: 17px;
-}
+    .card {
+        border-radius: 15px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        position: relative;
+        -webkit-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+        -o-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+        transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+        overflow: hidden;
+    }
+
+    .card:hover {
+        border-radius: 17px;
+    }
 </style>
 <body>
-  <header class="container mt-2" >
+<header class="container mt-2">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand mr-4" href="/">Джуманджи</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-        <ul class="navbar-nav col-8">
-          <li class="nav-item">
-            <a class="nav-link" href="/vacancies/">Вакансии</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/companies/">Компании</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/about">О проекте</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav col-3 justify-content-end">
-          <li class="nav-item active">
-              {% if request.user.is_authenticated == False %}
-                  <li class="nav-item">
-                    <a href="/login" class="nav-link font-weight-bold">Вход</a>
-                  </li>
-                  <li>
-                  <a href="/register" class="nav-link font-weight-bold">Регистрация</a>
-                  </li>
-              {% endif %}
-            {% if request.user.is_authenticated == True %}
+        <a class="navbar-brand mr-4" href="/">Джуманджи</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <ul class="navbar-nav col-8">
+                <li class="nav-item">
+                    <a class="nav-link" href="/vacancies/">Вакансии</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/companies/">Компании</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">О проекте</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav col-3 justify-content-end">
+                <li class="nav-item active">
+                    {% if request.user.is_authenticated == False %}
+                        <li class="nav-item">
+                            <a href="/login" class="nav-link font-weight-bold">Вход</a>
+                        </li>
+                        <li>
+                            <a href="/register" class="nav-link font-weight-bold">Регистрация</a>
+                        </li>
+                    {% endif %}
+                {% if request.user.is_authenticated == True %}
 
-                  <ul class="navbar-nav col-2 justify-content-end">
-                  <li class="nav-item active">
-                    <div class="btn-group">
-                        <img class="rounded-circle shadow img" src="{{request.user.resume.profile_pic.url}}" width="39" height="39">
-                      <button type="button" class="btn dropdown-toggle font-weight-bold" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ request.user.first_name }}  {{ request.user.last_name }}
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-right mt-3">
-                        <a href="/profile" class="dropdown-item py-2">Профиль</a>
-                        <a href="/myresume" class="dropdown-item py-2">Резюме</a>
-                        <a href="/mycompany" class="dropdown-item py-2">Компания</a>
-                        <a href="/logout" class="dropdown-item py-2">Выйти</a>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              {% endif %}
-          </li>
-        </ul>
-      </div>
+                    <ul class="navbar-nav col-2 justify-content-end">
+                        <li class="nav-item active">
+                            <div class="btn-group">
+                                <img class="rounded-circle shadow img" src="{{ request.user.resume.profile_pic.url }}"
+                                     width="39" height="39">
+                                <button type="button" class="btn dropdown-toggle font-weight-bold"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ request.user.first_name }} {{ request.user.last_name }}
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right mt-3">
+                                    <a href="/profile" class="dropdown-item py-2">Профиль</a>
+                                    <a href="/myresume" class="dropdown-item py-2">Резюме</a>
+                                    <a href="/mycompany" class="dropdown-item py-2">Компания</a>
+                                    <a href="/logout" class="dropdown-item py-2">Выйти</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                {% endif %}
+                </li>
+            </ul>
+        </div>
     </nav>
-  </header>
-    {% block container %} {% endblock %}
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</header>
+{% block container %} {% endblock %}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+{% load static %}
+<script src="{% static 'js/animation.js' %}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
 <script>
-  AOS.init();
+    AOS.init();
 </script>
 </html>

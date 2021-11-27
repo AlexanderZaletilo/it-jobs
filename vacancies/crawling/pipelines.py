@@ -197,7 +197,7 @@ class DevBy:
             name=d['name'],
             location=d['address'],
             description=d['description'],
-            external_logo_url=d['logo_url'],
+            external_logo_url=d['logo_url'].replace("pre_medium_white", "original"),
             external_url=d['url'],
             external_site=cls.name,
         )

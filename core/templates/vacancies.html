@@ -53,42 +53,55 @@
                         {% if forloop.counter|divisibleby:"2" %}
                             <div data-aos="fade-left" class="card mb-4">
                         {% endif %}
+
                     <a href="/vacancies/{{ object.id }}/" style="text-decoration: none; color: #000">
-                        <div class="card-body px-4 non-underline-link">
-                            <div class="row">
-                                <div class="col-12 col-md-8 col-lg-9">
-                                    <h2 class="h2 pb-2">{{ object.title }}</h2>
-                                    <p class="mb-2">{{ object.specialty.title }}</p>
-                                    {% if object.salary_min != None and object.salary_max != None %}
-                                        <p>От {{ object.salary_min }}
-                                            до {{ object.salary_max }} {{ object.currency }}.</p>
-                                    {% endif %}
-                                    {% if object.salary_min != None and object.salary_max == None %}
-                                        <p>От {{ object.salary_min }} {{ object.currency }}.</p>
-                                    {% endif %}
-                                    {% if object.salary_min == None and object.salary_max != None %}
-                                        <p>до {{ object.salary_max }} {{ object.currency }}.</p>
-                                    {% endif %}
-                                    {% if object.salary_min == None and object.salary_max == None %}
-                                        <p>Зп не указана</p>
-                                    {% endif %}
-                                    <p class="text-muted pt-1">{{ object.published_at }}</p>
-                                    <p class="mb-2"> Компания: {{ object.company.name }}</p>
-                                </div>
-                                <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
+                        {% if object.is_internal == True %}
+                            <div class="card-body px-4 non-underline-link" style="border: 1px solid #FCEFC6;">
 
-                                    {% if object.company.logo != None %}
-                                        <img src="{{ object.company.logo.url }}"
-                                             width="130" height="80" alt="">
-                                    {% endif %}
-                                    {% if object.logo != None %}
-                                        <img src="{{ object.logo }}"
-                                             width="130" height="130" alt=""
-                                             style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
-                                    {% endif %}
-
-                                </div>
+                        {% endif %}
+                        {% if object.is_internal == False %}
+                            <div class="card-body px-4 non-underline-link">
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-12 col-md-8 col-lg-9">
+                                <h2 class="h2 pb-2">{{ object.title }}</h2>
+                                <p class="mb-2">{{ object.specialty.title }}</p>
+                                {% if object.salary_min != None and object.salary_max != None %}
+                                    <p>От {{ object.salary_min }}
+                                        до {{ object.salary_max }} {{ object.currency }}.</p>
+                                {% endif %}
+                                {% if object.salary_min != None and object.salary_max == None %}
+                                    <p>От {{ object.salary_min }} {{ object.currency }}.</p>
+                                {% endif %}
+                                {% if object.salary_min == None and object.salary_max != None %}
+                                    <p>до {{ object.salary_max }} {{ object.currency }}.</p>
+                                {% endif %}
+                                {% if object.salary_min == None and object.salary_max == None %}
+                                    <p>Зп не указана</p>
+                                {% endif %}
+                                <p class="text-muted pt-1">{{ object.published_at }}</p>
+                                <p class="mb-2"> Компания: {{ object.company.name }}</p>
                             </div>
+                            <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
+
+                                {% if object.company.logo != "company.png" %}
+                                    <img src="{{ object.company.logo.url }}"
+                                         width="130" height="130" alt=""
+                                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                                {% endif %}
+                                {% if object.company.external_logo_url != None %}
+                                    <img src="{{ object.company.external_logo_url }}"
+                                         width="130" height="130" alt=""
+                                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                                {% endif %}
+                                {% if object.logo != None %}
+                                    <img src="{{ object.logo }}"
+                                         width="130" height="130" alt=""
+                                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                                {% endif %}
+
+                            </div>
+                        </div>
                         </div>
                     </a>
                     </div>

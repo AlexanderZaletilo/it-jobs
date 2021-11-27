@@ -28,45 +28,29 @@
                     {% for object in vacancies %}
                         {% if not forloop.counter|divisibleby:"2" %}
                             <div data-aos="flip-left" class="card mb-4">
-                                <div class="card-body px-4">
-                                    <div class="row">
-                                        <div class="col-12 col-md-8 col-lg-9">
-                                            <a href="/vacancies/{{ object.id }}/" class="h2 pb-2">{{ object.title }}</a>
-                                            <p class="mb-2">{{ object.specialty.title }}</p>
-                                            <p>От {{ object.salary_min }} до {{ object.salary_max }} руб.</p>
-                                            <p class="text-muted pt-1">{{ object.published_at }}</p>
-                                            <p class="mb-2"> Кмпания: {{ object.company.name }}</p>
-                                        </div>
-                                        <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
-                                            <a href="/vacancies/{{ object.id }}/"><img
-                                                    src="{{ object.specialty.picture.url }}" width="130" alt=""></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         {% endif %}
                         {% if forloop.counter|divisibleby:"2" %}
                             <div data-aos="flip-right" class="card mb-4">
-                                <div class="card-body px-4">
-                                    <div class="row">
-                                        <div class="col-12 col-md-8 col-lg-9">
-                                            <a href="/vacancies/{{ object.id }}/" class="h2 pb-2">{{ object.title }}</a>
-                                            <p class="mb-2">{{ object.specialty.title }}</p>
-                                            <p>От {{ object.salary_min }} до {{ object.salary_max }} руб.</p>
-                                            <p class="text-muted pt-1">{{ object.published_at }}</p>
-                                            <p class="mb-2"> Кмпания: {{ object.company.name }}</p>
-                                        </div>
-                                        <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
-                                            <a href="/vacancies/{{ object.id }}/"><img
-                                                    src="{{ object.specialty.picture.url }}" width="130" alt=""></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         {% endif %}
+                        <div class="card-body px-4">
+                            <div class="row">
+                                <a href="/vacancies/{{ object.id }}/" style="text-decoration: none; color: #000">
+                                    <div class="col-12 col-md-8 col-lg-9">
+                                        <p class="h2 pb-2">{{ object.title }}</p>
+                                        <p class="mb-2">{{ object.specialty.title }}</p>
+                                        <p>От {{ object.salary_min }} до {{ object.salary_max }} руб.</p>
+                                        <p class="text-muted pt-1">{{ object.published_at }}</p>
+                                        <p class="mb-2"> Компания: {{ object.company.name }}</p>
+                                    </div>
+                                    <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
+
+
+                                    </div>
+                            </div>
+                        </div>
                     {% endfor %}
-                </div>
-            </div>
+                    </div>
+                    </div>
         </section>
     </main>
 {% endblock %}

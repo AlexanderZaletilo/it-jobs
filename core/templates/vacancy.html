@@ -20,14 +20,20 @@
             </div>
             <div class="col-12 col-lg-8">
                 <section class="pl-3">
-                    {% if object.company.logo != None %}
+                    {% if object.company.logo != "company.png" %}
                         <img src="{{ object.company.logo.url }}"
-                             width="130" height="80" alt="">
+                             width="70" height="70" alt=""
+                             style="width: 100%; max-width: 70px; max-height: 70px; height: auto;">
+                    {% endif %}
+                    {% if object.company.external_logo_url != None %}
+                        <img src="{{ object.company.external_logo_url }}"
+                             width="70" height="70" alt=""
+                             style="width: 100%; max-width: 70px; max-height: 70px; height: auto;">
                     {% endif %}
                     {% if object.logo != None %}
                         <img src="{{ object.logo }}"
-                             width="130" height="130" alt=""
-                             style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                             width="70" height="70" alt=""
+                             style="width: 100%; max-width: 70px; max-height: 70px; height: auto;">
                     {% endif %}
                     <div class="d-flex align-items-baseline align-content-baseline">
                         <h1 class="h2 mt-4 font-weight-bold">{{ object.title }}</h1>
@@ -51,7 +57,7 @@
                         <label class="mb-2 text-dark" for="vacancyDescription">Описание вакансии</label>
                         {{ object.description | safe }}
                     </div>
-                    {% if request.user.is_authenticated == True %}
+                    {% if request.user.is_authenticated == True and object.is_internal == True %}
                         <form data-aos="fade-up"
                               data-aos-anchor-placement="center-bottom" style="background-color: #F6F2E6" action=""
                               method="post" class="card mt-4 mb-3">
@@ -150,11 +156,16 @@
                             </div>
                         </form>
                     {% endif %}
-                    {% if request.user.is_authenticated == False %}
+                    {% if object.is_internal == False %}
+                        <div class="form-group pb-2">
+                            <label class="h4 mt-5 text-dark" for="userEducation">Это резюме было спаршено с другого
+                                сайта<a href="{{ object.url }}"> Источник</a></label>
+                        </div>
+                    {% endif %}
+                    {% if request.user.is_authenticated == False and object.is_internal == True %}
                         <div class="form-group pb-2">
                             <label class="h4 mt-5 text-dark" for="userEducation">Вы не авторизовались, чтобы отправить
                                 резюме <a href="/login">войдите</a></label>
-
                         </div>
                     {% endif %}
                 </section>

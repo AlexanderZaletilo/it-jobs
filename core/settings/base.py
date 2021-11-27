@@ -113,6 +113,9 @@ class Base(Configuration):
     # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
     STATIC_URL = "/static/"
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, "static"),
+    )
 
     # AWS storage settings
     AWS_ACCESS_KEY_ID = os.environ.get("STORAGE_ACCESS_KEY")
