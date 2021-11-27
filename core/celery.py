@@ -6,7 +6,6 @@ from celery.schedules import crontab
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 os.environ.setdefault("DJANGO_CONFIGURATION", "Production")
 configurations.setup()
@@ -30,30 +29,30 @@ app.autodiscover_tasks()
 #         crontab(minute="*/5"),
 #         run_spider.s('rabota_by', True, 30)
 #     )
-    # sender.add_periodic_task(
-    #     crontab(hour="7-23", minute=20),
-    #     run_spider.s('dev_by', True, 200)
-    # )
+# sender.add_periodic_task(
+#     crontab(hour="7-23", minute=20),
+#     run_spider.s('dev_by', True, 200)
+# )
 
-    # sender.add_periodic_task(
-    #     crontab(hour="4"),
-    #     run_spider.s('rabota_by', True, 2500)
-    # )
-    # # parse all vacancies
-    # sender.add_periodic_task(
-    #     crontab(hour="2"),
-    #     run_spider.s('dev_by', True)
-    # )
-    #
-    # # parse companies
-    # sender.add_periodic_task(
-    #     crontab(day="1,3,5"),
-    #     run_spider.s('rabota_by', False)
-    # )
-    # sender.add_periodic_task(
-    #     crontab(day="2,4"),
-    #     run_spider.s('dev_by', False)
-    # )
+# sender.add_periodic_task(
+#     crontab(hour="4"),
+#     run_spider.s('rabota_by', True, 2500)
+# )
+# # parse all vacancies
+# sender.add_periodic_task(
+#     crontab(hour="2"),
+#     run_spider.s('dev_by', True)
+# )
+#
+# # parse companies
+# sender.add_periodic_task(
+#     crontab(day="1,3,5"),
+#     run_spider.s('rabota_by', False)
+# )
+# sender.add_periodic_task(
+#     crontab(day="2,4"),
+#     run_spider.s('dev_by', False)
+# )
 
 
 @app.task(bind=True)
@@ -62,9 +61,10 @@ def debug_task(self):
 
 
 @app.task(name="run_spider")
-def run_spider(spider,
-               is_vacancy,
-               limit=9999999):
+def run_spider():
+    spider = "rabota_by"
+    is_vacancy = True
+    limit = 9999999
     print("svetlana")
     process = CrawlerProcess(get_project_settings())
     print("svetlana")
@@ -75,10 +75,10 @@ def run_spider(spider,
                   limit=limit)
     process.start()
 
+
 app.conf.beat_schedule = {
     "rabota_by_brief_vacancies": {
         "task": "run_spider",
         "schedule": crontab(minute="*/1"),
-        "args": ['rabota_by', True, 30]
     },
 }
