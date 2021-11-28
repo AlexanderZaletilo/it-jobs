@@ -305,7 +305,7 @@ def detail_vacancies(request, id):
             send_notification_link.delay(
                 to_email=vacancy.company.owner.email,
                 to_name=vacancy.company.owner.get_full_name(),
-                link="www.google.com",
+                link=f"http://localhost:8000/mycompany/vacancies/{id}",
                 fio=request.user.get_full_name(),
                 phone=request.user.resume.phone,
                 email=request.user.email,
