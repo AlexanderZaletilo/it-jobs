@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html lang="ru">
-<style>
-
-    .card {
-        cursor: pointer;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        position: relative;
-        -webkit-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-        -o-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-        transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-        border-radius: 16px;
-        overflow: hidden;
-        -webkit-box-shadow: 2px 2px 10px #e1e1e3, -2px -2px 10px #ffffff;
-        box-shadow: 2px 2px 10px #e1e1e3, -2px -2px 10px #ffffff;
-    }
-
-    .card:hover {
-        box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25);
-        border-radius: 15px;
-    }
-
-    a, .a {
-        text-decoration: none;
-        color: #000
-    }
-</style>
 <head>
+    <meta charset="UTF-8">
+    <title>Компании</title>
+    <style>
+
+        .card {
+            cursor: pointer;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            position: relative;
+            -webkit-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+            -o-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-radius: 16px;
+            overflow: hidden;
+            -webkit-box-shadow: 2px 2px 10px #e1e1e3, -2px -2px 10px #ffffff;
+            box-shadow: 2px 2px 10px #e1e1e3, -2px -2px 10px #ffffff;
+        }
+
+        .card:hover {
+            box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+        }
+
+
+    </style>
     <meta charset="UTF-8">
     <title>Компании</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -43,7 +42,7 @@
     <main class="container mt-3">
         <section>
             <h1 class="h1 text-center mx-auto mt-4 pt-5" style="font-size: 70px;"><strong>Компании</strong></h1>
-            <p class="text-center pt-1">Найдено {{ objects.all.count }} Компаний</p>
+            <p class="text-center pt-1">Найдено {{ total_companies }} Компаний</p>
             <div class="row mt-5">
                 <div class="col-12 col-lg-8 offset-lg-2 m-auto">
                     {% for object in objects %}
@@ -53,18 +52,19 @@
                         {% if forloop.counter|divisibleby:"2" %}
                             <div data-aos="fade-left" class="card mb-4">
                         {% endif %}
-                    <div class="card-body px-4">
-                        <a href="/companies/{{ object.id }}/" style="text-decoration: none; color: #000; padding: 0; margin: 0">
+                    <a href="/companies/{{ object.id }}/" style="text-decoration: none; color: #000">
+                        <div class="card-body px-4 non-underline-link">
                             <div class="row">
                                 <div class="col-12 col-md-8 col-lg-9">
                                     <h2 class="h2 pb-2">{{ object.name }}</h2>
-                                    <p class="mb-2">{{ object.owner.first_name }} {{ object.owner.last_name }}</p>
-                                    <p>От {{ object.location }} </p>
-                                    <p class="text-muted pt-1">{{ object.description | slice:":30" }}</p>
-                                    <p class="mb-2"> Кол-во работников: {{ object.employee_count }}</p>
+                                    {% if object.location != None %}
+                                        <p>Расположение {{ object.location }} </p>
+                                    {% endif %}
+                                    {% if object.employee_count != None %}
+                                        <p class="mb-2"> Кол-во работников: {{ object.employee_count }}</p>
+                                    {% endif %}
                                 </div>
                                 <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
-                                    <a href="/companies/{{ object.id }}/"></a>
                                     {% if object.logo != "company.png" %}
                                         <img src="{{ object.logo.url }}"
                                              width="130" height="130" alt=""
@@ -77,10 +77,15 @@
                                     {% endif %}
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                     </div>
                     {% endfor %}
+                    <div class="col-3 col-lg-12 offset-lg-2 m-auto">
+                        {% block sidebar %}
+                            {% include "paginator_template.html" %}
+                        {% endblock %}
+                    </div>
                     </div>
                 </div>
             </div>

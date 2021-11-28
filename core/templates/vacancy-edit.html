@@ -42,7 +42,7 @@
                                     </button>
                                 </div>
                             {% endfor %}
-                            <form action=""  name="update" method="post">
+                            <form action="" name="update" method="post">
                                 {% csrf_token %}
                                 <div class="mb-2 text-dark">
                                 </div>
@@ -97,9 +97,9 @@
                                 <div class="form-group">
                                     <input name="update" type="submit" class="btn btn-info" value="Сохранить">
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#exampleModal">
-                                                    Удалить
-                                                </button>
+                                            data-target="#exampleModal">
+                                        Удалить
+                                    </button>
                                 </div>
                             </form>
                             <!-- END Vacancy info -->
@@ -107,18 +107,63 @@
                             <h2 class="h4 pt-2 pb-3">Отклики - {{ applications.count }}</h2>
                             <!-- Application 1 -->
                             {% for application in applications %}
-                                <div class="card mt-3">
-                                    <div class="card-body px-4">
-                                        <p class="mb-1 font-weight-bold">{{ application.user.first_name|default_if_none:'' }} {{ application.user.last_name|default_if_none:'' }}</p>
-                                        <p class="mb-2"><a
-                                                href="tel:{{ application.user.resume.phone|default_if_none:'' }}"
-                                                class="text-dark">{{ application.user.resume.phone|default_if_none:'' }}</a>
-                                        </p>
-                                        <p class="mb-1">{{ application.user.resume.grade|default_if_none:'' }}</p>
-                                        <p class="mb-1">{{ application.user.resume.education|default_if_none:'' }}</p>
-                                        <p class="mb-1">{{ application.user.resume.experience|default_if_none:'' }}</p>
+
+                                {% if not forloop.counter|divisibleby:"2" %}
+                                    <div data-aos="fade-right" ata-aos-anchor-placement="top-bottom" class="card mb-4">
+                                {% endif %}
+                                {% if forloop.counter|divisibleby:"2" %}
+                                    <div data-aos="fade-left" class="card mb-4">
+                                {% endif %}
+
+                            <a href="/vacancies/{{ object.id }}/" style="text-decoration: none; color: #000">
+
+                                <div class="card-body mx5 px-4 non-underline-link">
+
+                                    <div class="row">
+                                        <div class="col-12 col-md-8 col-lg-9">
+                                            <h2 class="h2 pb-2">{{ application.user.first_name|default_if_none:'' }}
+                                                {{ application.user.last_name|default_if_none:'' }}</h2>
+                                            <p class="mb-2">{{ object.specialty.title }}</p>
+
+                                            <p class="text-muted pt-1">Статус:
+                                                {{ request.user.resume.status |default_if_none:'не указан' }}</p>
+                                            <p class="text-muted pt-1">Ождиамая зп:
+                                                {{ request.user.resume.salary |default_if_none:'не указана' }}</p>
+                                            <p class="mb-2"> Специализация: {{ request.user.resume.specialty |default_if_none:'не указана' }}</p>
+                                            <p class="mb-2"> Телефон: {{ request.user.resume.phone |default_if_none:'не указан' }}</p>
+                                            <p class="mb-2"> Градация: {{ request.user.resume.grade |default_if_none:'не указана' }}</p>
+                                            <p class="mb-2"> Образование: {{ request.user.resume.education |default_if_none:'не указан' }}</p>
+                                            <p class="mb-2"> Опыт: {{ request.user.resume.experience |default_if_none:'не указан' }}</p>
+                                            <p class="mb-2"> Портфолио: {{ request.user.resume.portfolio |default_if_none:'не указан' }}</p>
+                                        </div>
+                                        <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
+                                            <img src="{{ request.user.resume.profile_pic.url }}"
+                                                 width="80" height="80" alt=""
+                                                 style="width: 100%; max-width: 80px; max-height: 80px; height: auto;">
+                                        </div>
                                     </div>
                                 </div>
+                            </a>
+                            </div>
+
+                                {#                                <div class="card mt-3">#}
+                                {#                                    <div class="card-body px-4">#}
+                                {#                                        <div class="row">#}
+                                {##}
+                                {#                                            <p class="mb-1 font-weight-bold">#}
+                                {#                                                {{ application.user.first_name|default_if_none:'' }}#}
+                                {#                                                {{ application.user.last_name|default_if_none:'' }}</p>#}
+                                {#                                        </div>#}
+                                {#                                        <p class="mb-2"><a#}
+                                {#                                                href="tel:{{ application.user.resume.phone|default_if_none:'' }}"#}
+                                {#                                                class="text-dark">#}
+                                {#                                            {{ application.user.resume.phone|default_if_none:'' }}</a>#}
+                                {#                                        </p>#}
+                                {#                                        <p class="mb-1">{{ application.user.resume.grade|default_if_none:'' }}</p>#}
+                                {#                                        <p class="mb-1">{{ application.user.resume.education|default_if_none:'' }}</p>#}
+                                {#                                        <p class="mb-1">{{ application.user.resume.experience|default_if_none:'' }}</p>#}
+                                {#                                    </div>#}
+                                {#                                </div>#}
                             {% endfor %}
                         </section>
                         <!-- END Tab -->

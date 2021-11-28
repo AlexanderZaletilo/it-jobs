@@ -2,81 +2,118 @@
 <html lang="ru">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Вакансии | Джуманджи</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Вакансии | Джуманджи</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <style>
         .card {
-    cursor: pointer;
-  display:-webkit-box;
-  display:-ms-flexbox;
-  display:flex;
-  -webkit-box-orient:vertical;
-  -webkit-box-direction:normal;
-  -ms-flex-direction:column;
-  flex-direction:column;
-  position:relative;
-  -webkit-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  -o-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  border-radius:16px;
-  overflow:hidden;
-  -webkit-box-shadow:  15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
-  box-shadow:  15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
-}
+            cursor: pointer;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            position: relative;
+            -webkit-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+            -o-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-radius: 16px;
+            overflow: hidden;
+            -webkit-box-shadow: 15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
+            box-shadow: 15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
+        }
 
-.card:hover {
-  box-shadow: 5px 5px 30px 15px rgba(0,0,0,0.25);
-    border-radius: 15px;
-}
+        .card:hover {
+            box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+        }
     </style>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 {% extends 'wrapper.html' %}
 {% block container %}
-  <main class="container mt-3">
-    <section>
+    <main class="container mt-3">
+        <section>
 
-        <h1 class="h1 text-center mt-5 mb-4">Поиск вакансий</h1>
+            <h1 class="h1 text-center mt-5 mb-4">Поиск вакансий</h1>
 
-        <div class="row">
-            <div class="col-md-7 col-lg-5 col-xl-5 col-sm-8 mx-auto">
+            <div class="row">
+                <div class="col-md-7 col-lg-5 col-xl-5 col-sm-8 mx-auto">
 
-            <form class="form-inline sm-form mr-auto mb-4" method="get" action="">
-                <input class="form-control mr-sm-2" name="q" type="text" value="{{ request.GET.q }}"
-                       placeholder="Например: ios" aria-label="Search">
-                <button class="btn btn-primary  my-0"  type="submit">Найти вакансии</button>
-            </form>
+                    <form class="form-inline sm-form mr-auto mb-4" method="get" action="">
+                        <input class="form-control mr-sm-2" name="q" type="text" value="{{ request.GET.q }}"
+                               placeholder="Например: ios" aria-label="Search">
+                        <button class="btn btn-primary  my-0" type="submit">Найти вакансии</button>
+                    </form>
 
+                </div>
             </div>
-        </div>
 
 
-      <p class="text-center pt-1">Найдено {{ result.all.count }} вакансий</p>
-        {% for object in results %}
-      <div  class="row mt-2">
-        <div class="col-12 py-4 my-2 col-lg-8 offset-lg-2 m-auto">
+            <p class="text-center pt-1">Найдено {{ result.all.count }} вакансий</p>
+            {% for object in results %}
                 {% if not forloop.counter|divisibleby:"2" %}
-                    <div data-aos="fade-right" class="card pt-4 mt-2 px-4">
-                {% else %}
-                    <div data-aos="fade-left" class="card pt-4 mt-2 px-4">
+                    <div data-aos="fade-right" data-aos-anchor-placement="top-bottom" class="card mb-4">
                 {% endif %}
-              <div class="row">
-                <div class="col-12 col-md-8 col-lg-9">
-                  <h2 class="h2 pb-2">{{ object.title }}</h2>
-                  <p class="mb-2">{{ object.skills }}</p>
-                  <p>От {{ object.salary_min }} до {{ object.salary_max }} руб.</p>
-                  <p class="text-muted pt-1">{{ published_at }}</p>
+                {% if forloop.counter|divisibleby:"2" %}
+                    <div data-aos="fade-left" class="card mb-4">
+                {% endif %}
+
+            <a href="/vacancies/{{ object.id }}/" style="text-decoration: none; color: #000">
+                {% if object.is_internal == True %}
+                    <div class="card-body px-4 non-underline-link" style="border: 1px solid #FCEFC6;">
+
+                {% endif %}
+                {% if object.is_internal == False %}
+                    <div class="card-body px-4 non-underline-link">
+                {% endif %}
+                <div class="row">
+                    <div class="col-12 col-md-8 col-lg-9">
+                        <h2 class="h2 pb-2">{{ object.title }}</h2>
+                        <p class="mb-2">{{ object.specialty.title }}</p>
+                        {% if object.salary_min != None and object.salary_max != None %}
+                            <p>От {{ object.salary_min }}
+                                до {{ object.salary_max }} {{ object.currency }}.</p>
+                        {% endif %}
+                        {% if object.salary_min != None and object.salary_max == None %}
+                            <p>От {{ object.salary_min }} {{ object.currency }}.</p>
+                        {% endif %}
+                        {% if object.salary_min == None and object.salary_max != None %}
+                            <p>до {{ object.salary_max }} {{ object.currency }}.</p>
+                        {% endif %}
+                        {% if object.salary_min == None and object.salary_max == None %}
+                            <p>Зп не указана</p>
+                        {% endif %}
+                        <p class="text-muted pt-1">{{ object.published_at }}</p>
+                        <p class="mb-2"> Компания: {{ object.company.name }}</p>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
+
+                        {% if object.company.logo != "company.png" %}
+                            <img src="{{ object.company.logo.url }}"
+                                 width="130" height="130" alt=""
+                                 style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                        {% endif %}
+                        {% if object.company.external_logo_url != None %}
+                            <img src="{{ object.company.external_logo_url }}"
+                                 width="130" height="130" alt=""
+                                 style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                        {% endif %}
+                        {% if object.logo != None %}
+                            <img src="{{ object.logo }}"
+                                 width="130" height="130" alt=""
+                                 style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                        {% endif %}
+
+                    </div>
                 </div>
-                <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
-                  <a href="/vacancies/{{ object.id }}"><img src="{{ object.company.logo.url }}" width="130" height="80" alt=""></a>
                 </div>
-              </div>
+            </a>
             </div>
-          </div>
-        </div>
-      </div>
-        {% endfor %}
-    </section>
-  </main>
+            {% endfor %}
+        </section>
+    </main>
 {% endblock %}

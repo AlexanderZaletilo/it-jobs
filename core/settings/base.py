@@ -56,10 +56,10 @@ class Base(Configuration):
                     "django.contrib.auth.context_processors.auth",
                     "django.contrib.messages.context_processors.messages",
                 ],
-                'libraries': {
-                    'proper_paginate': 'core.templatetags.proper_paginate',
-                    'url_replace': 'core.templatetags.url_replace',
-                }
+                "libraries": {
+                    "proper_paginate": "core.templatetags.proper_paginate",
+                    "url_replace": "core.templatetags.url_replace",
+                },
             },
         },
     ]
@@ -113,9 +113,7 @@ class Base(Configuration):
     # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
     STATIC_URL = "/static/"
-    STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, "static"),
-    )
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
     # AWS storage settings
     AWS_ACCESS_KEY_ID = os.environ.get("STORAGE_ACCESS_KEY")
@@ -184,8 +182,52 @@ class Base(Configuration):
             "core": {"handlers": ["file"], "level": "INFO", "propagate": True},
         },
     }
+    # CACHEOPS
+    CACHEOPS_REDIS = REDIS_URL
+
+    CACHEOPS = {
+        "vacancies.Company": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Specialty": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Currency": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.SiteType": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Vacancy": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Application": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.StatusModel": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.GradeModel": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Resume": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+    }
 
     # MAILJET
     MAILJET_PUBLIC_KEY = os.environ.get("MAILJET_PUBLIC_KEY")
     MAILJET_PRIVATE_KEY = os.environ.get("MAILJET_PRIVATE_KEY")
     MAILJET_EMAIL_TEMPLATE_ID = int(os.environ.get("MAILJET_EMAIL_TEMPLATE_ID"))
+    MAILJET_NOTIFICATION_TEMPLATE_ID = int(
+        os.environ.get("MAILJET_NOTIFICATION_TEMPLATE_ID")
+    )

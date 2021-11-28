@@ -18,39 +18,94 @@
         </div>
         <section>
             <div class="text-center">
-                <img src="{{ object.logo.url }}" width="130" height="80" alt="">
+                {% if object.logo != "company.png" %}
+                    <img src="{{ object.logo.url }}"
+                         width="130" height="130" alt=""
+                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                {% endif %}
+                {% if object.external_logo_url != None %}
+                    <img src="{{ object.external_logo_url }}"
+                         width="130" height="130" alt=""
+                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                {% endif %}
             </div>
             <h1 class="h1 text-center mx-auto mt-0 pt-1" style="font-size: 70px;"><strong>{{ object.name }}</strong>
             </h1>
+            <div data-aos="fade-down-right" class="form-group pb-2">
+                <label class="mb-2 text-dark" for="vacancyDescription">Описание компании</label>
+                {{ object.description | safe }}
+            </div>
             <p class="text-center pt-1">Компания, {{ vacancies.count }} вакансий</p>
             <div class="row mt-5">
                 <div class="col-12 col-lg-8 offset-lg-2 m-auto">
                     {% for object in vacancies %}
+
                         {% if not forloop.counter|divisibleby:"2" %}
-                            <div data-aos="flip-left" class="card mb-4">
+                            <div data-aos="fade-right" ata-aos-anchor-placement="top-bottom" class="card mb-4">
                         {% endif %}
                         {% if forloop.counter|divisibleby:"2" %}
-                            <div data-aos="flip-right" class="card mb-4">
+                            <div data-aos="fade-left" class="card mb-4">
                         {% endif %}
-                        <div class="card-body px-4">
-                            <div class="row">
-                                <a href="/vacancies/{{ object.id }}/" style="text-decoration: none; color: #000">
-                                    <div class="col-12 col-md-8 col-lg-9">
-                                        <p class="h2 pb-2">{{ object.title }}</p>
-                                        <p class="mb-2">{{ object.specialty.title }}</p>
-                                        <p>От {{ object.salary_min }} до {{ object.salary_max }} руб.</p>
-                                        <p class="text-muted pt-1">{{ object.published_at }}</p>
-                                        <p class="mb-2"> Компания: {{ object.company.name }}</p>
-                                    </div>
-                                    <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
 
+                    <a href="/vacancies/{{ object.id }}/" style="text-decoration: none; color: #000">
+                        {% if object.is_internal == True %}
+                            <div class="card-body px-4 non-underline-link" style="border: 1px solid #FCEFC6;">
 
-                                    </div>
+                        {% endif %}
+                        {% if object.is_internal == False %}
+                            <div class="card-body px-4 non-underline-link">
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-12 col-md-8 col-lg-9">
+                                <h2 class="h2 pb-2">{{ object.title }}</h2>
+                                <p class="mb-2">{{ object.specialty.title }}</p>
+                                {% if object.salary_min != None and object.salary_max != None %}
+                                    <p>От {{ object.salary_min }}
+                                        до {{ object.salary_max }} {{ object.currency }}.</p>
+                                {% endif %}
+                                {% if object.salary_min != None and object.salary_max == None %}
+                                    <p>От {{ object.salary_min }} {{ object.currency }}.</p>
+                                {% endif %}
+                                {% if object.salary_min == None and object.salary_max != None %}
+                                    <p>до {{ object.salary_max }} {{ object.currency }}.</p>
+                                {% endif %}
+                                {% if object.salary_min == None and object.salary_max == None %}
+                                    <p>Зп не указана</p>
+                                {% endif %}
+                                <p class="text-muted pt-1">{{ object.published_at }}</p>
+                                <p class="mb-2"> Компания: {{ object.company.name }}</p>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-3 d-flex align-items-center">
+
+                                {% if object.company.logo != "company.png" %}
+                                    <img src="{{ object.company.logo.url }}"
+                                         width="130" height="130" alt=""
+                                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                                {% endif %}
+                                {% if object.company.external_logo_url != None %}
+                                    <img src="{{ object.company.external_logo_url }}"
+                                         width="130" height="130" alt=""
+                                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                                {% endif %}
+                                {% if object.logo != None %}
+                                    <img src="{{ object.logo }}"
+                                         width="130" height="130" alt=""
+                                         style="width: 100%; max-width: 130px; max-height: 130px; height: auto;">
+                                {% endif %}
+
                             </div>
                         </div>
+                        </div>
+                    </a>
+                    </div>
                     {% endfor %}
+                    <div class="col-3 col-lg-12 offset-lg-2 m-auto">
+                        {% block sidebar %}
+                            {% include "paginator_template.html" %}
+                        {% endblock %}
                     </div>
                     </div>
+                </div>
         </section>
     </main>
 {% endblock %}

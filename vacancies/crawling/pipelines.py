@@ -20,7 +20,7 @@ class Currency(Enum):
 
 
 class RabotaBy:
-    name = 'rabota_by'
+    name = "rabota_by"
     vacancy_id_p = re.compile(r"(?<=/vacancy/)(?P<id>\d+)")
 
     posted_p = re.compile(r"(?P<day>\d\d?) (?P<month>\w+) (?P<year>\d{4})")
@@ -57,15 +57,15 @@ class RabotaBy:
     @classmethod
     def process_company(cls, d, spider):
         item = CompanyItem(
-            location=d['address'],
-            description=d['description'],
-            external_logo_url=d['logo_url'],
-            external_url=d['url'],
+            location=d["address"],
+            description=d["description"],
+            external_logo_url=d["logo_url"],
+            external_url=d["url"],
             external_site=cls.name,
         )
 
-        if d['name']:
-            item['name'] = d['name']
+        if d["name"]:
+            item["name"] = d["name"]
 
         return item
 
@@ -131,7 +131,7 @@ class RabotaBy:
 
 class DevBy:
 
-    name = 'dev_by'
+    name = "dev_by"
     vacancy_id_p = re.compile(r"(?<=/vacancies/)(?P<id>\d+)")
 
     salary_p = re.compile(r"(от )?\$?(?P<min>\d+)?—?(до )?\$?(?P<max>\d+)?")
@@ -204,30 +204,32 @@ class DevBy:
 
     @classmethod
     def process_company(cls, d, spider):
-        for field in ('name', 'description', 'employees'):
+        for field in ("name", "description", "employees"):
             if not d[field]:
                 raise DropItem(f"Can't extract {field} field", level=logging.ERROR)
 
         item = CompanyItem(
-            name=d['name'],
-            location=d['address'],
-            description=d['description'],
-            external_logo_url=d['logo_url'],
-            external_url=d['url'],
+            name=d["name"],
+            location=d["address"],
+            description=d["description"],
+            external_logo_url=d["logo_url"],
+            external_url=d["url"],
             external_site=cls.name,
         )
-        if item['external_logo_url']:
-            item['external_logo_url'] = item['external_logo_url'].replace("pre_medium_white", "original")
+        if item["external_logo_url"]:
+            item["external_logo_url"] = item["external_logo_url"].replace(
+                "pre_medium_white", "original"
+            )
 
-        if cls.e_count_p.search(d['employees']):
-            item['employee_count'] = int(cls.e_count_p.search(d['employees']).group(0))
+        if cls.e_count_p.search(d["employees"]):
+            item["employee_count"] = int(cls.e_count_p.search(d["employees"]).group(0))
 
         return item
 
 
 class MainPipeline:
     def process_item(self, item, spider):
-        method = 'process_' + ('vacancy' if spider.is_vacancy else 'company')
+        method = "process_" + ("vacancy" if spider.is_vacancy else "company")
         return getattr(eval(spider.processor), method)(item, spider)
 
 
@@ -249,13 +251,12 @@ class SaveDbPipeline:
         item["is_internal"] = False
 
         company = Company.objects.get_or_create(
-            external_site_id=item['site_type_id'],
-            external_url=item['company_link']
+            external_site_id=item["site_type_id"], external_url=item["company_link"]
         )[0]
-        if company.name != item['company_name']:
-            company.name = item['company_name']
+        if company.name != item["company_name"]:
+            company.name = item["company_name"]
             company.save()
-        item['company'] = company
+        item["company"] = company
 
         item.fill_defaults()
 
@@ -289,7 +290,7 @@ class SaveDbPipeline:
         item['last_updated'] = datetime.datetime.utcnow()
         Company.objects.filter(
             external_site_id=self.site_type_map[item.pop("external_site")],
-            external_url=item.pop("external_url")
+            external_url=item.pop("external_url"),
         ).update(**item)
 
     def process_item(self, item, spider):

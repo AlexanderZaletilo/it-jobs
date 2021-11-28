@@ -49,7 +49,9 @@ class BaseSpider(scrapy.Spider):
                     .limit(self.limit)\
                     .values_list('external_url', flat=True)
 
-            self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
+            self.log(
+                f"Started walking through {len(urls)} companies...", level=logging.INFO
+            )
             for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse_company)
                 if self.should_stop():

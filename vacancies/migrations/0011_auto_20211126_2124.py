@@ -7,27 +7,32 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacancies', '0010_vacancy_logo'),
+        ("vacancies", "0010_vacancy_logo"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='external_site',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='vacancies.sitetype'),
+            model_name="company",
+            name="external_site",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="vacancies.sitetype",
+            ),
         ),
         migrations.AddField(
-            model_name='company',
-            name='external_url',
+            model_name="company",
+            name="external_url",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='description',
+            model_name="company",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterUniqueTogether(
-            name='company',
-            unique_together={('external_site_id', 'external_url')},
+            name="company",
+            unique_together={("external_site_id", "external_url")},
         ),
     ]
