@@ -182,6 +182,47 @@ class Base(Configuration):
             "core": {"handlers": ["file"], "level": "INFO", "propagate": True},
         },
     }
+    # CACHEOPS
+    CACHEOPS_REDIS = REDIS_URL
+
+    CACHEOPS = {
+        "vacancies.Company": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Specialty": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Currency": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.SiteType": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Vacancy": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Application": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.StatusModel": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.GradeModel": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+        "vacancies.Resume": {
+            "ops": "all",
+            "timeout": int(os.environ.get("CACHEOPS_TIMEOUT", 600)),
+        },
+    }
 
     # MAILJET
     MAILJET_PUBLIC_KEY = os.environ.get("MAILJET_PUBLIC_KEY")
