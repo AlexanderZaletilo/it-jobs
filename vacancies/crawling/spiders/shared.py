@@ -1,9 +1,12 @@
+import datetime
 import logging
 
 import scrapy.exceptions
 from scrapy import logformatter
+from django.db.models import F, Q
 
 from vacancies.models import Company, SiteType
+
 
 
 def cls_check(klass):
@@ -19,10 +22,11 @@ def normalize_selector_list(list):
 
 
 class BaseSpider(scrapy.Spider):
-    def __init__(self, *args, is_vacancy=True, limit=99999, **kwargs):
+    def __init__(self, *args, is_vacancy=True, limit=99999, above_dt=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.is_vacancy = is_vacancy
         self.limit = limit
+        self.above_dt = above_dt
         self.parsed = 0
 
     def should_stop(self):
@@ -34,8 +38,16 @@ class BaseSpider(scrapy.Spider):
             for url in self.start_urls:
                 yield scrapy.Request(url=url, callback=self.parse_vacancies)
         else:
-            urls = Company.objects.filter(external_site=SiteType.objects.get(name=self.name)) \
-                .values_list('external_url', flat=True)
+            if self.above_dt:
+                urls = Company.objects.filter(Q(external_site=SiteType.objects.get(name=self.name))
+                                              & (Q(last_updated__gte=self.above_dt) |
+                                                 Q(last_updated=None)))\
+                    .values_list('external_url', flat=True)
+            else:
+                urls = Company.objects.filter(external_site=SiteType.objects.get(name=self.name))\
+                    .order_by(F('last_updated').asc(nulls_first=True))\
+                    .limit(self.limit)\
+                    .values_list('external_url', flat=True)
 
             self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
             for url in urls:

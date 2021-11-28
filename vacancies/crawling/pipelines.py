@@ -1,3 +1,4 @@
+import datetime
 import logging
 import re
 import os
@@ -285,7 +286,7 @@ class SaveDbPipeline:
 
     def process_company(self, item, spider):
         spider.log(f"Updating company {item['external_url']}", level=logging.INFO)
-
+        item['last_updated'] = datetime.datetime.utcnow()
         Company.objects.filter(
             external_site_id=self.site_type_map[item.pop("external_site")],
             external_url=item.pop("external_url")
