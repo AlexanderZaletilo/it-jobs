@@ -55,8 +55,8 @@ def run_spiders(spider,
 app.conf.beat_schedule = {
     "rabota_by_brief_vacancies": {
         "task": "run_spiders",
-        "schedule": crontab(hour="8-23", minute="*/2"),
-        "args": ("rabota_by", 25)
+        "schedule": crontab(hour="8-23"),
+        "args": ("rabota_by", 250)
     },
     "dev_by_brief_vacancies": {
         "task": "run_spiders",
