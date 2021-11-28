@@ -25,7 +25,7 @@ app.autodiscover_tasks()
 
 
 def execute_command(command):
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
     for line in TextIOWrapper(process.stdout):
         logging.info(line)
     process.wait()
@@ -55,8 +55,8 @@ def run_spiders(spider,
 app.conf.beat_schedule = {
     "rabota_by_brief_vacancies": {
         "task": "run_spiders",
-        "schedule": crontab(hour="8-23"),
-        "args": ("rabota_by", 250)
+        "schedule": crontab(hour="8-23", minute="*/2"),
+        "args": ("rabota_by", 25)
     },
     "dev_by_brief_vacancies": {
         "task": "run_spiders",
