@@ -1,13 +1,12 @@
-import datetime
+import logging
 import os
+import subprocess
+from io import TextIOWrapper
 
 import configurations
 from celery import Celery, shared_task
 from celery.schedules import crontab
-from scrapy.crawler import CrawlerProcess
-from twisted.internet import reactor, defer
-from scrapy.crawler import CrawlerProcess, CrawlerRunner, configure_logging
-from scrapy.utils.project import get_project_settings
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 os.environ.setdefault("DJANGO_CONFIGURATION", "Production")
@@ -25,6 +24,13 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 
+def execute_command(command):
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for line in TextIOWrapper(process.stdout):
+        logging.info(line)
+    process.wait()
+
+
 @app.task(bind=True)
 def debug_task(self):
     print(f"Request: {self.request!r}")
@@ -34,39 +40,16 @@ def debug_task(self):
 def run_spider(spider,
                is_vacancy,
                limit):
-    configure_logging(get_project_settings())
-    runner = CrawlerRunner(get_project_settings())
-
-    @defer.inlineCallbacks
-    def crawl():
-        yield runner.crawl(spider,
-                           is_vacancy=is_vacancy,
-                           limit=limit)
-        reactor.stop()
-
-    crawl()
-    reactor.run()  #
+    execute_command(f"python manage.py crawl {spider} "
+                    f"--{'vacancies' if is_vacancy else 'companies'} "
+                    f"--limit {limit}")
 
 
 @app.task(name="run_spiders")
 def run_spiders(spider,
                 limit):
-    configure_logging(get_project_settings())
-    runner = CrawlerRunner(get_project_settings())
-
-    @defer.inlineCallbacks
-    def crawl():
-        above_dt = datetime.datetime.utcnow()
-        yield runner.crawl(spider,
-                           is_vacancy=True,
-                           limit=limit)
-        yield runner.crawl(spider,
-                           is_vacancy=False,
-                           above_dt=above_dt)
-        reactor.stop()
-
-    crawl()
-    reactor.run()  #
+    execute_command(f"python manage.py crawl_both {spider}"
+                    f" --limit {limit}")
 
 
 app.conf.beat_schedule = {
@@ -78,7 +61,7 @@ app.conf.beat_schedule = {
     "dev_by_brief_vacancies": {
         "task": "run_spiders",
         "schedule": crontab(hour="8-23", minute=30),
-        "args": ("dev_by", 150)
+        "args": ("dev_by", 250)
     },
     "rabota_by_all_vacancies": {
         "task": "run_spider",

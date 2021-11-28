@@ -1,3 +1,5 @@
+import datetime
+
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from django.core.management import BaseCommand
@@ -13,10 +15,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         process = CrawlerProcess(get_project_settings())
-
-        # var = name of spider
-
         process.crawl(
-            options["spider"], is_vacancy=options["is_vacancy"], limit=options["limit"]
+            options["spider"],
+            is_vacancy=options["is_vacancy"],
+            limit=options["limit"]
         )
         process.start()

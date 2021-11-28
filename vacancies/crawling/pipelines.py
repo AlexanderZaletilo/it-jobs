@@ -6,7 +6,7 @@ from enum import Enum
 from datetime import date
 from urllib.parse import urlparse, urlunparse
 
-from .spiders import DevBySpider, HabrSpider, RabotaBySpider
+from .spiders import DevBySpider, RabotaBySpider
 from .spiders.shared import DropItem
 from .items import Vacancy as VacancyItem, Company as CompanyItem
 from vacancies.models import Vacancy, SiteType, Currency as CurrencyDjango, Company
@@ -236,12 +236,12 @@ class MainPipeline:
 class SaveDbPipeline:
     def __init__(self):
         self.currency_map = {
-            item.value: CurrencyDjango.objects.get_or_create(name=item.value)[0].id
+            item.value: CurrencyDjango.objects.get(name=item.value).id
             for item in Currency
         }
         self.site_type_map = {
-            spider.name: SiteType.objects.get_or_create(name=spider.name)[0].id
-            for spider in (RabotaBySpider, DevBySpider, HabrSpider)
+            spider.name: SiteType.objects.get(name=spider.name).id
+            for spider in (RabotaBySpider, DevBySpider)
         }
 
     def process_vacancy(self, item, spider):
