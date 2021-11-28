@@ -6,25 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacancies', '0011_auto_20211126_2124'),
+        ("vacancies", "0011_auto_20211126_2124"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='vacancy',
-            name='company_link',
+            model_name="vacancy",
+            name="company_link",
         ),
         migrations.RemoveField(
-            model_name='vacancy',
-            name='company_name',
+            model_name="vacancy",
+            name="company_name",
         ),
         migrations.RemoveField(
-            model_name='vacancy',
-            name='logo',
+            model_name="vacancy",
+            name="logo",
         ),
         migrations.AddField(
-            model_name='company',
-            name='external_logo_url',
+            model_name="company",
+            name="external_logo_url",
             field=models.URLField(blank=True, null=True),
         ),
     ]

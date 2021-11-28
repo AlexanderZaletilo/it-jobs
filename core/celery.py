@@ -70,15 +70,13 @@ def run_spider():
     print("svetlana")
     # var = name of spider
 
-    process.crawl(spider,
-                  is_vacancy=is_vacancy,
-                  limit=limit)
+    process.crawl(spider, is_vacancy=is_vacancy, limit=limit)
     process.start()
 
 
-app.conf.beat_schedule = {
-    "rabota_by_brief_vacancies": {
-        "task": "run_spider",
-        "schedule": crontab(minute="*/1"),
-    },
-}
+# app.conf.beat_schedule = {
+#     "rabota_by_brief_vacancies": {
+#         "task": "run_spider",
+#         "schedule": crontab(minute="*/1"),
+#     },
+# }

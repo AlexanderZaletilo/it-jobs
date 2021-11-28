@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -21,10 +23,7 @@ class Company(models.Model):
     employee_count = models.IntegerField(null=True, blank=True)
 
     external_site = models.ForeignKey(
-        "SiteType",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
+        "SiteType", on_delete=models.SET_NULL, null=True, blank=True
     )
     external_logo_url = models.URLField(null=True, blank=True)
     external_url = models.URLField(null=True, blank=True)
@@ -152,23 +151,35 @@ class Resume(models.Model):
     token = models.TextField(default="")
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     profile_pic = models.ImageField(default="check.png", null=True, blank=True)
-    first_name = models.CharField(max_length=32, null=True)
-    last_name = models.CharField(max_length=32, null=True)
+    first_name = models.CharField(max_length=32, null=True, blank=True)
+    last_name = models.CharField(max_length=32, null=True, blank=True)
     status = models.ForeignKey(
-        StatusModel, on_delete=models.CASCADE, related_name="resume", null=True
+        StatusModel,
+        on_delete=models.CASCADE,
+        related_name="resume",
+        null=True,
+        blank=True,
     )
-    salary = models.IntegerField(null=True)
+    salary = models.IntegerField(null=True, blank=True)
     specialty = models.ForeignKey(
-        Specialty, on_delete=models.CASCADE, related_name="resume", null=True
+        Specialty,
+        on_delete=models.CASCADE,
+        related_name="resume",
+        null=True,
+        blank=True,
     )
-    phone = models.CharField(max_length=32, null=True)
+    phone = models.CharField(max_length=32, null=True, blank=True)
     grade = models.ForeignKey(
-        GradeModel, on_delete=models.CASCADE, related_name="resume", null=True
+        GradeModel,
+        on_delete=models.CASCADE,
+        related_name="resume",
+        null=True,
+        blank=True,
     )
-    education = models.CharField(max_length=500, null=True)
-    experience = models.CharField(max_length=32, null=True)
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
-    portfolio = models.CharField(max_length=32, null=True)
+    education = models.CharField(max_length=500, null=True, blank=True)
+    experience = models.CharField(max_length=32, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    portfolio = models.CharField(max_length=32, null=True, blank=True)
 
     def __str__(self):
         return self.user.username

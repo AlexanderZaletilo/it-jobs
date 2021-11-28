@@ -53,3 +53,17 @@ def send_verification_email_link(to_email, to_name, link, firstname):
         link=link,
         firstname=firstname,
     )
+
+
+@shared_task
+def send_notification_link(to_email, to_name, link, fio, phone, email, firstname):
+    return send_template_email(
+        to_email,
+        to_name,
+        template_id=settings.MAILJET_NOTIFICATION_TEMPLATE_ID,
+        link=link,
+        firstname=firstname,
+        FIO=fio,
+        phone=phone,
+        email=email,
+    )

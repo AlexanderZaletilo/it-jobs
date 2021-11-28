@@ -8,9 +8,11 @@ from .shared import cls_check, normalize_selector_list, DropItem, BaseSpider
 
 
 class RabotaBySpider(BaseSpider):
-    name = 'rabota_by'
+    name = "rabota_by"
     processor = "RabotaBy"
-    start_urls = ["https://rabota.by/search/vacancy?industry=7&specialization=1&area=16"]
+    start_urls = [
+        "https://rabota.by/search/vacancy?industry=7&specialization=1&area=16"
+    ]
     allowed_domains = ["rabota.by", "hh.ru"]
 
     @staticmethod
@@ -19,17 +21,30 @@ class RabotaBySpider(BaseSpider):
 
         if not sub_response.get():
             yield {
-                'url': response.url,
-                'logo_url': response.xpath('//img[contains(@class, "logo") and contains(@class, "tmpl")'
-                                           ' and not(contains(@class, "mobile"))]/@src').get(),
-                'name': None, 'description': None, 'address': None}
+                "url": response.url,
+                "logo_url": response.xpath(
+                    '//img[contains(@class, "logo") and contains(@class, "tmpl")'
+                    ' and not(contains(@class, "mobile"))]/@src'
+                ).get(),
+                "name": None,
+                "description": None,
+                "address": None,
+            }
         else:
             yield {
                 "url": response.url,
-                'logo_url': sub_response.xpath('.//img[@data-qa="company-logo-image"]/@src').get(),
-                "name": sub_response.xpath('normalize-space(.//*[@data-qa="company-header-title-name"])').get(),
-                "description": sub_response.xpath(f'.//div[@data-qa="company-description-text"]').get(),
-                'address': sub_response.xpath(f'.//div[@data-qa="sidebar-text-color"]/div[1]/text()').get()
+                "logo_url": sub_response.xpath(
+                    './/img[@data-qa="company-logo-image"]/@src'
+                ).get(),
+                "name": sub_response.xpath(
+                    'normalize-space(.//*[@data-qa="company-header-title-name"])'
+                ).get(),
+                "description": sub_response.xpath(
+                    f'.//div[@data-qa="company-description-text"]'
+                ).get(),
+                "address": sub_response.xpath(
+                    f'.//div[@data-qa="sidebar-text-color"]/div[1]/text()'
+                ).get(),
             }
 
     def parse_vacancies(self, response):

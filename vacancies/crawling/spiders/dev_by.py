@@ -15,12 +15,21 @@ class DevBySpider(BaseSpider):
 
         yield {
             "url": response.url,
-            'logo_url': sub_response.xpath(
-                './/div[@class="widget-companies-header"]//img[contains(@src, "logos")]/@src').get(),
-            "name": sub_response.xpath('.//div[@class="widget-companies-header"]//h1/text()').get(),
-            "description": sub_response.xpath(f'.//div[{cls_check("description")}]/div[@class="text"]').get(),
-            'address': sub_response.xpath(f'normalize-space(.//div[@class="info-ofice"])').get(),
-            'employees': sub_response.xpath(f'.//*[@class="employee-count"]/text()').get()
+            "logo_url": sub_response.xpath(
+                './/div[@class="widget-companies-header"]//img[contains(@src, "logos")]/@src'
+            ).get(),
+            "name": sub_response.xpath(
+                './/div[@class="widget-companies-header"]//h1/text()'
+            ).get(),
+            "description": sub_response.xpath(
+                f'.//div[{cls_check("description")}]/div[@class="text"]'
+            ).get(),
+            "address": sub_response.xpath(
+                f'normalize-space(.//div[@class="info-ofice"])'
+            ).get(),
+            "employees": sub_response.xpath(
+                f'.//*[@class="employee-count"]/text()'
+            ).get(),
         }
 
     def parse_vacancies(self, response):

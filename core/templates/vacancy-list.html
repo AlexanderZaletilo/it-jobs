@@ -58,9 +58,9 @@
                                                     {{ object.specialty.title }}
                                                 </p>
                                             </div>
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
                             {% endfor %}
                             <!-- END vacancy state 1 -->
                             <!-- vacancy state 2 -->
@@ -69,6 +69,11 @@
                         <form action="/mycompany/vacancies/create">
                             <button class="btn btn-primary btn-lg btn-block my-3">Создать</button>
                         </form>
+                        <div class="col-3 col-lg-12 offset-lg-2 m-auto">
+                            {% block sidebar %}
+                                {% include "paginator_template.html" %}
+                            {% endblock %}
+                        </div>
                     </div>
                 </div>
             </div>

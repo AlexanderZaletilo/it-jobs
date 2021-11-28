@@ -42,7 +42,7 @@
                                     </button>
                                 </div>
                             {% endfor %}
-                            <form action=""  name="update" method="post">
+                            <form action="" name="update" method="post">
                                 {% csrf_token %}
                                 <div class="mb-2 text-dark">
                                 </div>
@@ -97,9 +97,9 @@
                                 <div class="form-group">
                                     <input name="update" type="submit" class="btn btn-info" value="Сохранить">
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#exampleModal">
-                                                    Удалить
-                                                </button>
+                                            data-target="#exampleModal">
+                                        Удалить
+                                    </button>
                                 </div>
                             </form>
                             <!-- END Vacancy info -->
@@ -109,10 +109,13 @@
                             {% for application in applications %}
                                 <div class="card mt-3">
                                     <div class="card-body px-4">
-                                        <p class="mb-1 font-weight-bold">{{ application.user.first_name|default_if_none:'' }} {{ application.user.last_name|default_if_none:'' }}</p>
+                                        <p class="mb-1 font-weight-bold">
+                                            {{ application.user.first_name|default_if_none:'' }}
+                                            {{ application.user.last_name|default_if_none:'' }}</p>
                                         <p class="mb-2"><a
                                                 href="tel:{{ application.user.resume.phone|default_if_none:'' }}"
-                                                class="text-dark">{{ application.user.resume.phone|default_if_none:'' }}</a>
+                                                class="text-dark">
+                                            {{ application.user.resume.phone|default_if_none:'' }}</a>
                                         </p>
                                         <p class="mb-1">{{ application.user.resume.grade|default_if_none:'' }}</p>
                                         <p class="mb-1">{{ application.user.resume.education|default_if_none:'' }}</p>

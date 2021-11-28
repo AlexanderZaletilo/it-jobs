@@ -34,10 +34,13 @@ class BaseSpider(scrapy.Spider):
             for url in self.start_urls:
                 yield scrapy.Request(url=url, callback=self.parse_vacancies)
         else:
-            urls = Company.objects.filter(external_site=SiteType.objects.get(name=self.name)) \
-                .values_list('external_url', flat=True)
+            urls = Company.objects.filter(
+                external_site=SiteType.objects.get(name=self.name)
+            ).values_list("external_url", flat=True)
 
-            self.log(f"Started walking through {len(urls)} companies...", level=logging.INFO)
+            self.log(
+                f"Started walking through {len(urls)} companies...", level=logging.INFO
+            )
             for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse_company)
                 if self.should_stop():

@@ -11,7 +11,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Count
 
-from core.base.send_emails import send_verification_email_link
+from core.base.send_emails import send_verification_email_link, send_notification_link
 
 from .token import account_activation_token
 from .models import Specialty, Application
@@ -40,8 +40,14 @@ def SearchView(request):
 
 class CompanyListView(ListView):
     model = Company
+    paginate_by = 6
     template_name = "company_list.html"
     context_object_name = "objects"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total_companies"] = Company.objects.all().count()
+        return context
 
 
 class About(View):
@@ -91,10 +97,13 @@ def update_my_vacancy(request, vacancy_id):
     return render(request, "vacancy-edit.html", context=context)
 
 
-def MyCompanyVacancyView(request):
+class MyCompanyVacancyView(ListView):
     template_name = "vacancy-list.html"
-    context = {"objects": Vacancy.objects.filter(company__owner=request.user)}
-    return render(request, template_name, context=context)
+    context_object_name = "objects"
+    paginate_by = 2
+
+    def get_queryset(self):
+        return Vacancy.objects.filter(company__owner=self.request.user)
 
 
 def MyCompany(request):
@@ -259,18 +268,20 @@ class VacancyBySpecialization(ListView):
 
 class DetailCompany(ListView):
     model = Company
+    paginate_by = 6
+    context_object_name = "vacancies"
     template_name = "company.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["object"] = get_object_or_404(Company, id=self.kwargs["id"])
-        context["vacancies"] = Vacancy.objects.select_related(
-            "company", "specialty"
-        ).filter(
+    def get_queryset(self):
+        return Vacancy.objects.select_related("company", "specialty").filter(
             company=get_object_or_404(
                 Company.objects.prefetch_related("vacancies"), id=self.kwargs["id"]
             )
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object"] = get_object_or_404(Company, id=self.kwargs["id"])
         return context
 
 
@@ -289,6 +300,16 @@ def detail_vacancies(request, id):
                 written_cover_letter=request.user.resume.education,
                 vacancy=get_object_or_404(Vacancy, id=id),
                 user=request.user,
+            )
+            vacancy = Vacancy.objects.select_related("company__owner").get(id=id)
+            send_notification_link.delay(
+                to_email=vacancy.company.owner.email,
+                to_name=vacancy.company.owner.get_full_name(),
+                link="www.google.com",
+                fio=request.user.get_full_name(),
+                phone=request.user.resume.phone,
+                email=request.user.email,
+                firstname=request.user.get_full_name(),
             )
             return render(request, template_name="sent.html")
         context = {
