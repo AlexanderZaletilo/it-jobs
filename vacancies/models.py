@@ -27,9 +27,11 @@ class Company(models.Model):
     )
     external_logo_url = models.URLField(null=True, blank=True)
     external_url = models.URLField(null=True, blank=True)
+    last_updated = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = ("external_site_id", "external_url")
+        index_together = [["external_site_id", "last_updated"]]
 
     def __str__(self):
         return self.name
@@ -45,14 +47,14 @@ class Specialty(models.Model):
 
 
 class Currency(models.Model):
-    name = models.CharField(max_length=3)
+    name = models.CharField(max_length=3, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class SiteType(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name

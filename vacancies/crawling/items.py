@@ -20,6 +20,7 @@ class Company(scrapy.Item):
     external_site_id = scrapy.Field()
     external_url = scrapy.Field()
     external_logo_url = scrapy.Field()
+    last_updated = scrapy.Field()
 
 
 class Vacancy(scrapy.Item):
