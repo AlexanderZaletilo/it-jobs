@@ -80,13 +80,13 @@
                 <h1 class="h1 text-center mx-auto mt-4 pt-3" style="font-size: 70px;"><strong>Вакансии</strong></h1>
             {% endif %}
             <form method="get" class="text-center col-12 col-lg-8 offset-lg-2 m-auto">
-                {{ objects.form.as_p }}
+                {{filter.form.as_p}}
                 <input class="mt-4 btn btn-success" type="submit"/>
             </form>
             <p class="text-center pt-1">Найдено {{ total_vacancy }} вакансий</p>
             <div class="row mt-4">
                 <div class="col-12 col-lg-8 offset-lg-2 m-auto">
-                    {% for object in objects.qs %}
+                    {% for object in objects %}
                         {% if not forloop.counter|divisibleby:"2" %}
                             <div data-aos="fade-right" data-aos-anchor-placement="top-bottom" class="card mb-4">
                         {% endif %}

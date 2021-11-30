@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, View
 
+from core.base.list_filtered_mixin import ListFilteredMixin
 from core.base.send_emails import send_verification_email_link, send_notification_link
 from .filters import VacancyFilter
 from .forms import *
@@ -238,30 +239,37 @@ class MainView(ListView):
         return context
 
 
-class ListVacancies(ListView):
-    # context_object_name = "objects"
+class ListVacancies(ListFilteredMixin, ListView):
+    context_object_name = "objects"
+    filter_set = VacancyFilter
     template_name = "vacancies.html"
     paginate_by = 12
     queryset = Vacancy.objects.select_related("company", "specialty", "currency").all()
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        filter = VacancyFilter(self.request.GET, queryset)
-        return filter.qs
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        filter = VacancyFilter(self.request.GET, queryset)
-        context["total_vacancy"] = queryset.count()
-        context["objects"] = filter
+        context["total_vacancy"] = super().get_queryset().count()
         return context
+
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     # filter = VacancyFilter(self.request.GET, queryset)
+    #     return queryset
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     queryset = self.get_queryset()
+    #     filter = VacancyFilter(self.request.GET, queryset)
+    #     context["total_vacancy"] = queryset.count()
+    #     context["objects"] = filter
+    #     return context
 
 
 class VacancyBySpecialization(ListView):
     template_name = "vacancies.html"
     paginate_by = 12
-    queryset = Vacancy.objects.select_related("company", "specialty")
+    queryset = Vacancy.objects.select_related("company", "specialty").order_by("id")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
