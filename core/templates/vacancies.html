@@ -23,6 +23,43 @@
             box-shadow: 15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
         }
 
+        select {
+            display: inline-block;
+            width: 10%;
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem 1.75rem .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        input {
+            display: inline-block;
+            width: 22%;
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem 1.75rem .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
         .card:hover {
             box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25);
             border-radius: 15px;
@@ -42,13 +79,16 @@
             {% else %}
                 <h1 class="h1 text-center mx-auto mt-4 pt-3" style="font-size: 70px;"><strong>Вакансии</strong></h1>
             {% endif %}
-
+            <form method="get" class="text-center col-12 col-lg-8 offset-lg-2 m-auto">
+                {{ objects.form.as_p }}
+                <input class="mt-4 btn btn-success" type="submit"/>
+            </form>
             <p class="text-center pt-1">Найдено {{ total_vacancy }} вакансий</p>
             <div class="row mt-4">
                 <div class="col-12 col-lg-8 offset-lg-2 m-auto">
-                    {% for object in objects %}
+                    {% for object in objects.qs %}
                         {% if not forloop.counter|divisibleby:"2" %}
-                            <div data-aos="fade-right" ata-aos-anchor-placement="top-bottom" class="card mb-4">
+                            <div data-aos="fade-right" data-aos-anchor-placement="top-bottom" class="card mb-4">
                         {% endif %}
                         {% if forloop.counter|divisibleby:"2" %}
                             <div data-aos="fade-left" class="card mb-4">

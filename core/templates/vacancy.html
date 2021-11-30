@@ -54,9 +54,14 @@
                     </div>
                     <p class="mt-2">{{ object.specialty.title }} </p>
                     <div data-aos="fade-down-right" class="form-group pb-2">
+                        <p class="mt-2 font-weight-bold">Локация: {{ object.address|default_if_none:'не указана' }} </p>
+                        <p class="mt-2 font-weight-bold">Опыт: {{ object.experience|default_if_none:'не указан' }} </p>
+                        <p class="mt-2 font-weight-bold">Skills: {{ object.skills|default_if_none:'не указаны' }} </p>
+                        <p class="mt-2 font-weight-bold"> {{ object.employment_mode|default_if_none:'' }} </p>
                         <label class="mb-2 text-dark" for="vacancyDescription">Описание вакансии</label>
                         {{ object.description | safe }}
                     </div>
+                    <p class="mt-2 font-weight-bold">{{ object.published_at|default_if_none:'не указаны' }} </p>
                     {% if request.user.is_authenticated == True and object.is_internal == True %}
                         <form data-aos="fade-up"
                               data-aos-anchor-placement="center-bottom" style="background-color: #F6F2E6" action=""

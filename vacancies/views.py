@@ -1,21 +1,21 @@
 import logging
 
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import CreateView, ListView, View
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.postgres.search import SearchVector
-from django.http import Http404, HttpResponseRedirect
-from django.urls import reverse_lazy
-from django.contrib import messages
 from django.db.models import Count
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView, View
 
 from core.base.send_emails import send_verification_email_link, send_notification_link
-
-from .token import account_activation_token
-from .models import Specialty, Application
+from .filters import VacancyFilter
 from .forms import *
+from .models import Specialty, Application
+from .token import account_activation_token
 
 logger = logging.getLogger(__name__)
 
@@ -28,11 +28,9 @@ def SearchView(request):
         results = (
             Vacancy.objects.select_related("specialty", "company")
                 .annotate(
-                search=SearchVector(
-                    "title", "specialty__title", "company__name", "skills"
-                )
-            )
-                .filter(search=q)
+                search=SearchVector("title") + SearchVector('specialty__title') +
+                       SearchVector("company__name") + SearchVector("skills")
+            ).filter(search__icontains=q)
         )
         return render(request, template_name, {"results": results, "query": q})
     return render(request, template_name, {"results": results})
@@ -241,14 +239,22 @@ class MainView(ListView):
 
 
 class ListVacancies(ListView):
-    context_object_name = "objects"
+    # context_object_name = "objects"
     template_name = "vacancies.html"
     paginate_by = 12
     queryset = Vacancy.objects.select_related("company", "specialty", "currency").all()
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        filter = VacancyFilter(self.request.GET, queryset)
+        return filter.qs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["total_vacancy"] = Vacancy.objects.all().count()
+        queryset = self.get_queryset()
+        filter = VacancyFilter(self.request.GET, queryset)
+        context["total_vacancy"] = queryset.count()
+        context["objects"] = filter
         return context
 
 

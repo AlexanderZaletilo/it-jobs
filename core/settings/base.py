@@ -1,4 +1,5 @@
 import os
+import sys
 
 from configurations import Configuration
 
@@ -19,6 +20,7 @@ class Base(Configuration):
     DEBUG = False
 
     # Application definition
+    sys.modules['django_dia'] = __import__('django-dia')
 
     INSTALLED_APPS = [
         "django.contrib.admin",
@@ -28,8 +30,10 @@ class Base(Configuration):
         "django.contrib.messages",
         "django.contrib.staticfiles",
         "vacancies.apps.VacanciesConfig",
+        "django_filters",
         "crispy_forms",
         "storages",
+        "django_dia",
     ]
 
     MIDDLEWARE = [
@@ -75,6 +79,7 @@ class Base(Configuration):
             "HOST": os.environ.get("DATABASE_HOST"),
             "PORT": os.environ.get("DATABASE_PORT"),
             "CONN_MAX_AGE": 100,
+            'OPTIONS': {'sslmode': 'require'},
         }
     }
 
