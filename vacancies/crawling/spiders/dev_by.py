@@ -7,7 +7,7 @@ class DevBySpider(BaseSpider):
     name = "dev_by"
     start_urls = ["https://jobs.dev.by/"]
     allowed_domains = ["jobs.dev.by"]
-    processor = "DevBy"
+    processor = "DevByProcessor"
 
     @staticmethod
     def parse_company(response):

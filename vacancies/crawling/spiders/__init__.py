@@ -4,4 +4,3 @@
 # your spiders.
 from .dev_by import DevBySpider
 from .rabota_by import RabotaBySpider
-from .habr import HabrSpider
