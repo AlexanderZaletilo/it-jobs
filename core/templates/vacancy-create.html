@@ -42,7 +42,7 @@
                                     </button>
                                 </div>
                             {% endfor %}
-                            <form action=""  name="update" method="post">
+                            <form action="" name="update" method="post">
                                 {% csrf_token %}
                                 <div class="mb-2 text-dark">
                                 </div>
@@ -67,7 +67,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-4">
                                         <div class="form-group pb-2">
                                             <label class="mb-2 text-dark" for="vacancySalaryMin">Зарплата от</label>
                                             <input class="form-control" type="text"
@@ -75,12 +75,22 @@
                                                    name="salary_min" id="id_salary_min">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-4">
                                         <div class="form-group pb-2">
                                             <label class="mb-2" for="vacancySalaryMax">Зарплата до</label>
                                             <input class="form-control" type="text"
                                                    value="{{ form.salary_max.value|default_if_none:'' }}"
                                                    name="salary_max" id="salary_max">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group pb-2">
+                                            <label class="mb-2 text-dark" for="userSpecialization">Валюта</label>
+                                            <select class="custom-select mr-sm-2" id="currency" name="currency">
+                                                {% for object in form.currency %}
+                                                    <a>{{ object }}</a>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

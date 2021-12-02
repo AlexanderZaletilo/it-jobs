@@ -33,6 +33,7 @@ class ResumeForm(ModelForm):
             "salary",
             "status",
             "specialty",
+            "currency",
             "grade",
             "education",
             "experience",
@@ -50,4 +51,4 @@ class MyCompanyForm(ModelForm):
 class VacancyForm(forms.ModelForm):
     class Meta:
         model = Vacancy
-        exclude = ["published_at", "company", "published_at"]
+        exclude = ["published_at", "company", "published_at", "is_internal"]

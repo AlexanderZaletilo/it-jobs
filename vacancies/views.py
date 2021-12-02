@@ -64,6 +64,7 @@ def create_my_vacancy(request):
                 specialty_id=request.POST.get("specialty"),
                 company=Company.objects.get(owner=request.user),
                 skills=request.POST.get("skills"),
+                is_internal=True,
                 description=request.POST.get("description"),
                 salary_min=request.POST.get("salary_min"),
                 salary_max=request.POST.get("salary_max"),
@@ -165,11 +166,11 @@ def RegisterPage(request):
                     user=user,
                     first_name=user.first_name,
                     last_name=user.last_name,
-                    verified=True,
+                    verified=False,
                     token=account_activation_token.make_token(user),
                 )
                 resume.save()
-                send_verification_email_link.delay(
+                send_verification_email_link(
                     to_email=user.email,
                     to_name=user.first_name,
                     link=f"http://localhost:8000/{user.resume.token}/verify/",
@@ -244,7 +245,8 @@ class ListVacancies(ListFilteredMixin, ListView):
     filter_set = VacancyFilter
     template_name = "vacancies.html"
     paginate_by = 12
-    queryset = Vacancy.objects.select_related("company", "specialty", "currency").all()
+    queryset = Vacancy.objects.order_by("-is_internal").select_related("company", "specialty", "currency").all()
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -316,7 +318,7 @@ def detail_vacancies(request, id):
                 user=request.user,
             )
             vacancy = Vacancy.objects.select_related("company__owner").get(id=id)
-            send_notification_link.delay(
+            send_notification_link(
                 to_email=vacancy.company.owner.email,
                 to_name=vacancy.company.owner.get_full_name(),
                 link=f"http://localhost:8000/mycompany/vacancies/{id}",

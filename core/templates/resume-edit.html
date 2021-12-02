@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-5">
                             <div class="form-group pb-2">
                                 <label class="mb-2 text-dark" for="userReady">Готовность к работе</label>
                                 <select class="custom-select mr-sm-2" id="status" name="status">
@@ -61,11 +61,21 @@
 
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
                             <div class="form-group pb-2">
-                                <label class="mb-2 text-dark" for="userPortfolio">Ожидаемое вознаграждение</label>
+                                <label class="mb-2 text-dark" for="userPortfolio">Вознаграждение</label>
                                 <input class="form-control" type="number" name="salary"
                                        value="{{ form.salary.value|default_if_none:'' }}" required id="id_salary">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group pb-2">
+                                <label class="mb-2 text-dark" for="userSpecialization">Валюта</label>
+                                <select class="custom-select mr-sm-2" id="currency" name="currency">
+                                    {% for object in form.currency %}
+                                        <a>{{ object }}</a>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
                     </div>

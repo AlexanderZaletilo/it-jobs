@@ -34,7 +34,7 @@ class Company(models.Model):
         index_together = [["external_site_id", "last_updated"]]
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Specialty(models.Model):
@@ -43,21 +43,21 @@ class Specialty(models.Model):
     picture = models.ImageField(null=True, blank=True)
 
     def __str__(self):
-        return self.code
+        return str(self.code)
 
 
 class Currency(models.Model):
     name = models.CharField(max_length=3, unique=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class SiteType(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Vacancy(models.Model):
@@ -112,32 +112,32 @@ class Vacancy(models.Model):
     published_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     class Meta:
         unique_together = ("site_type_id", "vacancy_id")
 
 
 class Application(models.Model):
-    written_username = models.CharField(max_length=32)
-    written_phone = models.CharField(max_length=32)
-    written_cover_letter = models.CharField(max_length=120)
+    written_username = models.CharField(max_length=32, null=True, blank=True)
+    written_phone = models.CharField(max_length=32, null=True, blank=True)
+    written_cover_letter = models.CharField(max_length=120, null=True, blank=True)
     vacancy = models.ForeignKey(
-        Vacancy, on_delete=models.CASCADE, related_name="applications"
+        Vacancy, on_delete=models.CASCADE, related_name="applications", null=True, blank=True
     )
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="applications"
+        User, on_delete=models.CASCADE, related_name="applications", null=True, blank=True
     )
 
     def __str__(self):
-        return self.written_username
+        return str(self.written_username)
 
 
 class StatusModel(models.Model):
     title = models.CharField(max_length=32)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
 class GradeModel(models.Model):
@@ -145,7 +145,7 @@ class GradeModel(models.Model):
     code = models.CharField(max_length=32)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
 class Resume(models.Model):
@@ -170,6 +170,13 @@ class Resume(models.Model):
         null=True,
         blank=True,
     )
+    currency = models.ForeignKey(
+        Currency,
+        on_delete=models.CASCADE,
+        related_name="resumes",
+        null=True,
+        blank=True,
+    )
     phone = models.CharField(max_length=32, null=True, blank=True)
     grade = models.ForeignKey(
         GradeModel,
@@ -184,4 +191,4 @@ class Resume(models.Model):
     portfolio = models.CharField(max_length=32, null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return str(self.user.username)
