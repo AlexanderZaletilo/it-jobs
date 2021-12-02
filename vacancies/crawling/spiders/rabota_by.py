@@ -9,7 +9,7 @@ from .shared import cls_check, normalize_selector_list, DropItem, BaseSpider
 
 class RabotaBySpider(BaseSpider):
     name = "rabota_by"
-    processor = "RabotaBy"
+    processor = "RabotaByProcessor"
     start_urls = [
         "https://rabota.by/search/vacancy?industry=7&specialization=1&area=16"
     ]

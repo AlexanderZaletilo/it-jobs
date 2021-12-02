@@ -1,12 +1,12 @@
 import datetime
 import logging
+from abc import ABC, abstractmethod
 
 import scrapy.exceptions
 from scrapy import logformatter
 from django.db.models import F, Q
 
 from vacancies.models import Company, SiteType
-
 
 
 def cls_check(klass):
@@ -21,7 +21,7 @@ def normalize_selector_list(list):
     return [item.xpath("normalize-space(.)").get() for item in list]
 
 
-class BaseSpider(scrapy.Spider):
+class BaseSpider(scrapy.Spider, ABC):
     def __init__(self, *args, is_vacancy=True, limit=99999, above_dt=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.is_vacancy = is_vacancy
@@ -46,7 +46,7 @@ class BaseSpider(scrapy.Spider):
             else:
                 urls = Company.objects.filter(external_site=SiteType.objects.get(name=self.name))\
                     .order_by(F('last_updated').asc(nulls_first=True))\
-                    .limit(self.limit)\
+                    [:self.limit]\
                     .values_list('external_url', flat=True)
 
             self.log(
@@ -56,6 +56,18 @@ class BaseSpider(scrapy.Spider):
                 yield scrapy.Request(url=url, callback=self.parse_company)
                 if self.should_stop():
                     return
+
+    @abstractmethod
+    def parse_company(self, response):
+        pass
+
+    @abstractmethod
+    def parse_vacancy(self, response):
+        pass
+
+    @abstractmethod
+    def parse_vacancies(self, response):
+        pass
 
 
 class DropItem(scrapy.exceptions.DropItem):

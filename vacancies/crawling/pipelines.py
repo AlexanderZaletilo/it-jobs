@@ -2,6 +2,7 @@ import datetime
 import logging
 import re
 import os
+from abc import ABC, abstractmethod
 from enum import Enum
 from datetime import date
 from urllib.parse import urlparse, urlunparse
@@ -19,7 +20,21 @@ class Currency(Enum):
     RUB = "RUB"
 
 
-class RabotaBy:
+class BaseProcessor(ABC):
+    name = ''
+
+    @classmethod
+    @abstractmethod
+    def process_vacancy(cls, d, spider):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def process_company(cls, d, spider):
+        pass
+
+
+class RabotaByProcessor(BaseProcessor):
     name = "rabota_by"
     vacancy_id_p = re.compile(r"(?<=/vacancy/)(?P<id>\d+)")
 
@@ -129,7 +144,7 @@ class RabotaBy:
         return item
 
 
-class DevBy:
+class DevByProcessor(BaseProcessor):
 
     name = "dev_by"
     vacancy_id_p = re.compile(r"(?<=/vacancies/)(?P<id>\d+)")
